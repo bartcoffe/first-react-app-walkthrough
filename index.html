@@ -137,7 +137,7 @@ To get started we'll prepare a minimal Hello World example:
 Create new project by using npx create-react-app books-app. That will set up sample project. 
                     </li>
                     <li>
-To run the server, cd to the project directory and type npm start. You can now use Live Server extension from vsCode to see the sample page.
+To run the server, cd to the project directory and type npm start. We can now use Live Server extension from vsCode to see the sample page.
                     </li>
                     <li>
 Delete all files from src and public dirs (except index.html in public) - We'll start from scratch.  
@@ -247,7 +247,7 @@ But first, we need to see two fundamental things: how to create component hierar
 to create a relationship between components just import child component to a parent component, then place it as a part of JSX return statement, much like a self-closing tag.         
                     </li>
                     <li>
-to share some data with child component, we use Props System. In the snippet below, notice the messageForChild inside BookCreate (looks just like a HTML attribute). This bit of JSX allows us to make that attribute avaliable in the child component. We grab it by receiving a props object (first argument to child component function). Said object will have a property of the name you specified and hold the value. Usually it's being destructured straightaway, get familiar with this syntax, see below:
+to share some data with child component, we use Props System. In the snippet below, notice the messageForChild inside BookCreate (looks just like a HTML attribute). This bit of JSX allows us to make that attribute avaliable in the child component. We grab it by receiving a props object (first argument to child component function). Said object will have a property of the name we specified and hold the value. Usually it's being destructured straightaway, get familiar with this syntax, see below:
                     </li>
                 </ol>
                 <div class="code-snippet">
@@ -327,7 +327,7 @@ Look at the diagram - what we need to facilitate is a communication from a child
                 <div class="thinking-react">
                     <h4>Thinking React</h4>
                     <p>
-To achieve child-to-parent communication think: Event Handlers + State. Define a function inside the component where the state you want to update resides, then pass it down using Props System to the child component you want to use it in. Call the passed function and Voila! Parent state gets updated from within child component.
+To achieve child-to-parent communication think: Event Handlers + State. Define a function inside the component where the state we want to update resides, then pass it down using Props System to the child component we want to use it in. Call the passed function and Voila! Parent state gets updated from within child component.
                     </p>
                 </div>
                 <div class="code-snippet">
@@ -396,7 +396,7 @@ export default BookCreate;
                     </pre>     
                 </div>
                 <p>
-You should be now be able to add books and see the changing state on the screen as a string representation of an object (JSX won't render an object, it will display nothing, hence the stringification).  
+We should be now be able to add books and see the changing state on the screen as a string representation of an object (JSX won't render an object, it will display nothing, hence the stringification).  
                 </p>
                 <p>
 There's definetly a lot to unpack here. There are four key pieces to understand above snippet:
@@ -422,7 +422,7 @@ Default browser behavior around form and input elements looks as follows:
                     </p>
                     <ul>
                         <li>
-If you wrap input html tag in html form tag, you can then listen for an onSubmit event triggered when user hits Enter key or submit button that sits inside a form.
+If we wrap input html tag in html form tag, we can then listen for an onSubmit event triggered when user hits Enter key or submit button that sits inside a form.
                         </li>
                         <li>
 The default behavior of onSubmit is that the browser collects the data from input fields and tries to make a network request with them like so: myapp.com?email=a@company.com&pass=abc (given that there were two input fields: 'email' and 'pass'). Consequently it causes the browser to reload the page. We can't have that happening so we need to disable this behavior. To do so, we need one more piece of information. 
@@ -495,7 +495,7 @@ return (
 Success! We got our child-to-parent communication down and our 'create book' functionality implemented. We have discussed the workflow but now let's focus on the actual handler that modifies the state. Remember, our books state is an array of objects. When we try to update arrays or objects, some extra caution is due.                
                 </p>
                 <p>
-You might be tempted to update state by doing something like below: 
+We might be tempted to update state by doing something like below: 
                 </p>
                 <div class="code-snippet">
                     <pre>
@@ -636,7 +636,7 @@ export default BookList;
 To test this, go to BookShow and make it return book title. Try out our first functionality!
                 </p>
                 <p>
-You might have noticed there is a key prop in BookShow. If you investigate prop object passed to BookShow, key won't show up there. It is a special prop used interanlly by React to help decide whether to re-render of components or not (optimization step).
+You might have noticed there is a key prop in BookShow. If we investigate prop object passed to BookShow, key won't show up there. It is a special prop used interanlly by React to help decide whether to re-render of components or not (optimization step).
                 </p>
             </section>
 
@@ -754,7 +754,7 @@ That's it, we got ourselves an edit mode toggle! Create some boilerplate code in
                 <section id="editing-components-edit-form">
                     <h4>Edit form</h4>
                     <p>
-Next thing is to implement the actual BookEdit component. Create form, input and button. As before, if you got input to implement, think of state system because that's the correct way of managing it in React. Steps are basically the same as before. 
+Next thing is to implement the actual BookEdit component. Create form, input and button. As before, if we got input to implement, think of state system because that's the correct way of managing it in React. Steps are basically the same as before. 
                     </p>
                     <p>
 One subtlety: when we click on Edit, we want our existing title to be a default input value. Again, we now handle form elements as a state so all we need to do is set default state as book title (we need to make book available by passing it down to BookEdit).             
@@ -991,7 +991,7 @@ Go to db.json we just created and add a new object like so:
 It will create a "table" available to us under route of localhost:3001/books. We can now send a HTTP request to populate our "database".
                     </p>
                     <p>
-Let's test it. You can use Insomnia or any other api client. It is a good option to use Rest Client extension from VSCode. You use it by creating new .http file inside your project directory and run it from there (Send Request icon will show up in the editor above correctly typed api request). It has a nice side effect: by interacting with your api you create a reference for other developers that might want to use your project.           
+Let's test it. We can use Insomnia or any other api client. It is a good option to use Rest Client extension from VSCode. We use it by creating new .http file inside your project directory and run it from there (Send Request icon will show up in the editor above correctly typed api request). It has a nice side effect: by interacting with your api we create a reference for other developers that might want to use your project.           
                     </p>
                     <div class="code-snippet">
                         <pre>
@@ -1001,7 +1001,7 @@ Let's test it. You can use Insomnia or any other api client. It is a good option
 GET http://localhost:3001/books HTTP/1.1
 Content-Type: application/json
 
-### //three hashes indicate you want to create separate request
+### //three hashes indicate we want to create separate request
 
 POST http://localhost:3001/books HTTP/1.1
 Content-Type: application/json
@@ -1053,7 +1053,7 @@ const createBook = async (title) => {
                     </pre>
                 </div>
                 <p>
-Second step is to fetch the list of book on app start. The function is easy to figure out, but where should we call it? If you just call it inside the component, it will be stuck in infinite loop of fetching data - updating state - rerender.  
+Second step is to fetch the list of book on app start. The function is easy to figure out, but where should we call it? If we just call it inside the component, it will be stuck in infinite loop of fetching data - updating state - rerender.  
                 </p>
                 <div class="code-snippet">
                     <pre>
@@ -1088,7 +1088,7 @@ useEffect(() => {
                     </pre>
                 </div>
                 <p>
-Let's now make editBookById and deleteBookById work. It uses the same logic as createBook so it should be straightforward. As an exercise try to add another attribute to books, like pages or year. All you need is already written. 
+Let's now make editBookById and deleteBookById work. It uses the same logic as createBook so it should be straightforward. As an exercise try to add another attribute to books, like pages or year. All we need is already written. 
                 </p>
                 <div class="code-snippet">
                     <pre>
@@ -1169,7 +1169,7 @@ Context object has two main properties inside it: Provider and Consumer (we won'
                     <div class="code-snippet">
                         <pre>
                             <code>
-//inside a component you want to have access to the context
+//inside a component we want to have access to the context
 
 import MyContext from './context/myContext';
 ...
@@ -1186,7 +1186,7 @@ Value prop above is special. This is what will be shared with MyComponent and it
                 <section id="context-consume-data">
                 <h4>Access the data in a component</h4>
                 <p>
-To access the data, first import useContext hook - it is able to access the value from context. Then import the Context object. You can now use useContext to retrieve value from MyContext. Remember, it will work only if MyComponent or its parent is wrapped by MyContext.Provider
+To access the data, first import useContext hook - it is able to access the value from context. Then import the Context object. We can now use useContext to retrieve value from MyContext. Remember, it will work only if MyComponent or its parent is wrapped by MyContext.Provider
                 </p>
                 <div class="code-snippet">
                     <pre>
@@ -1432,13 +1432,13 @@ It's refactor time!
 Take books state, fetchBook editBookById, deleteBookById, CreateBook and move it to books.js (our context file) inside Provider component. 
                         </li>
                         <li>
-Create an object named valuesToShare inside Custom Provider in books.js and add all the states and functions you want available there (so the book state and all its handlers). Then pass it in value prop in BooksContext.Provider in return statement.
+Create an object named valuesToShare inside Custom Provider in books.js and add all the states and functions we want available there (so the book state and all its handlers). Then pass it in value prop in BooksContext.Provider in return statement.
                         </li>
                         <li>
 Import the Context Object (in our case BooksContext) and useContext to all components that need to use books state.
                         </li>
                         <li>
-Retrieve the context by calling function useContext with BooksContext as an argument. Destructure the object to get only what you need, like:
+Retrieve the context by calling function useContext with BooksContext as an argument. Destructure the object to get only what we need, like:
                         <div class="code-snippet">
                             <pre>
                                 <code>
