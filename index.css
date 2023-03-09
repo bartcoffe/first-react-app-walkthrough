@@ -1,0 +1,169 @@
+
+:root {
+    /* colors */
+
+    --clr-black: 0 0% 0%;
+    --clr-dark: 0, 0%, 35%;
+    --clr-light:0, 0%, 85%;
+    --clr-blue: 195, 53%, 79%;
+    --clr-white: 0 0% 100%;
+    
+    /* font-sizes */
+
+    --fs-900: 3rem;
+    --fs-800: 2rem;
+    --fs-700: 1.7rem;
+    --fs-600: 1rem;
+    --fs-400: 0.9375rem;
+    
+    /* font-families */
+
+    --ff-sans-normal: 'Lato', sans-serif;
+}
+
+
+/* Box sizing */
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+/* Reset margins */
+
+body,
+h1,
+h2,
+h3,
+h4,
+h5,
+p,
+figure,
+picture {
+    margin: 0; 
+}
+
+
+/* set up the body */
+
+body {
+    font-family: var(--ff-sans-normal);
+    font-size: var(--fs-400);
+    color: hsl( var(--clr-black) );
+    background-color: hsl( var(--clr-white));
+    line-height: 1.5;
+    min-height: 100vh;
+    margin: 0 auto;
+    max-width: 800px;
+    
+    overflow-x: hidden;
+
+}
+
+/* make images easier to work with */
+
+img {
+    max-width: 100%;
+}
+
+/* utility classes */
+
+.flex {
+    display: flex;
+    gap: var(--gap, 1rem);
+    justify-content: space-evenly;
+}
+
+
+/* my styles */
+
+html {
+    scroll-behavior: smooth;
+  }
+
+main {
+    padding: 2rem;
+}
+
+h1 {
+    padding: 1.5rem;
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+h2,h3, h4 {
+    margin-top: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+p, .code-snippet {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+
+.code-snippet {
+    display: block;
+    height: fit-content;
+    overflow-x: auto;
+    color: hsl(var(--clr-dark));
+    width: 100%;
+
+    padding-left: 1rem;
+    border-style: dashed;
+    border-width: 2px;
+    border-color:  hsl(var(--clr-light));
+
+
+}
+
+.thinking-react {
+    padding-bottom: 3rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+    
+    border: dashed;
+    border-color: hsl(var(--clr-blue));
+    border-width: 2px;
+}
+
+.thinking-react > h4 {
+    text-align: center;
+}
+
+
+.image {
+    margin: 2rem auto 2rem auto;
+}
+
+ul > li {
+    list-style-type: circle; 
+}
+.table-of-contents li {
+    padding-bottom: 0.2rem;
+    padding-top: 0.2rem;
+}
+
+a {
+    display: inline;
+    color: hsl( var(--clr-dark) );
+    font-size: var(--fs-600);
+    text-decoration: none;
+    padding-left: 0;
+}
+
+a:hover {
+    border-bottom: 1px solid;
+    color: hsl( var(--clr-dark));
+}
+
+#app-mockup {
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+}
+
+#react-icon {
+    width: 5rem;
+}

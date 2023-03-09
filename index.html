@@ -1,0 +1,1552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="index.css">
+    <link rel="icon" href="assets/React-icon.png">
+
+    
+    <title>Create your first React App. A walk-through.</title>
+</head>
+<body>
+    <main>
+        <header class="flex">
+            <h1>Create your first React App:<br>A walk-through.</h1>
+            <div class="image">
+                <img id="react-icon" src="assets/React-icon.png" alt="">
+            </div>
+        </header>
+        <ol class="table-of-contents">
+            <li><a href="#what-will-we-build">What will we build?</a></li>
+            <li>
+                <a href="#part-one">Part I: Local, non-persisted list of books</a>
+                <ol>
+                    <li><a href="#initial-setup">Initial Set Up</a></li>
+                    <li><a href="#components-diagram">Components Diagram</a></li>
+                    <li><a href="#boilerplate-for-components">Boilerplate for each component</a></li>
+                    <li><a href="#states-props-first-approx">States and Props. First approximation</a></li>
+                    <li><a href="#modifying-state-workflow">Modifying the state: workflow</a></li>
+                    <li>
+                        <a href="#modifying-state-objects-arrays">Modifying the state: be careful around objects and arrays
+                        </a>
+                        <ol>
+                            <li><a href="#inserting">Inserting Array Elements</a></li>
+                            <li><a href="#inserting-index">Inserting Array Elements At Given Index</a></li>
+                            <li><a href="#removing">Removing Array Elements</a></li>
+                            <li><a href="#modifying-object">Modifying Object Properties</a></li>
+                        </ol>
+                    </li>
+                    <li><a href="#use-map-function">Use of map function</a></li>
+                    <li><a href="#deleting-components">Deleting Components</a></li>
+                    <li>
+                        <a href="#editing-components">Editing Components</a>
+                        <ol>
+                            <li><a href="#editing-components-toggle">Toggle</a></li>
+                            <li><a href="#editing-components-edit-form">Edit form</a></li>
+                            <li><a href="#editing-components-edit-books-handler">Edit Component - Event Handler</a></li>
+                            <li><a href="#editing-components-toggle-back">Toggle back and forth</a></li>
+                        </ol>
+                    </li>
+                    <li><a href="#first-part-done">First Part Done!</a></li>
+
+                </ol>
+                <li>
+                    <a href="#part-two">Part II: Data persistence with outside API</a>
+                    <ol>
+                        <li>
+                            <a href="#json-server">JSON Server</a>
+                            <ol>
+                                <li><a href="#json-server-install">Install JSON Server</a></li>
+                                <li><a href="#json-server-interact">How to interact with JSON Server?</a></li>
+                            </ol>
+                        </li>
+                        <li><a href="#updating-handlers">Updating Handlers</a></li>
+                        <li><a href="#use-effect">useEffect</a></li>
+                    </ol>
+                </li>
+
+                <li>
+                    <a href="#part-three">Part III: Outside API + centralized state</a>
+                    <ol>
+                        <li>
+                            <a href="#using-context">Using Context</a>
+                            <ol>
+                                <li><a href="#context-create-context">Create a Context Object</a></li>
+                                <li><a href="#context-specify-data">Specify the data to share</a></li>
+                                <li><a href="#context-consume-data">Consume the data</a></li>
+                            </ol>
+                        </li>
+                        <li><a href="#context-in-our-app">Context in our App</a></li>
+                        <li><a href="#context-custom-context">Custom Context Provider - the tricky part</a></li>
+                        <li><a href="#context-refactor">Books App Refactor with Context</a></li>
+                        <li>
+                            <a href="#hooks">Hooks</a>
+                            <ol>
+                                <li><a href="#custom-hooks">Custom Hooks</a></li>
+                                <li><a href="#use-callback">useCallback</a></li>
+                            </ol>
+                        </li>
+                        <li><a href="#this-is-it">This is it!</a></li>
+                    </ol>
+                </li>
+            </li>
+        </ol>
+
+
+
+
+        <section id="what-will-we-build">
+            <h2>What will we build?</h2>
+            <p>
+The idea behind the app we are about to create is simple. Create user interface displaying a list of books user wants to read. 
+            </p>
+            <p>
+User should be able to add new book to the the list using 'Add a book' as well as to delete it and edit it if any mistake was encountered. 
+            </p>
+
+            <div class="image">
+                <img id='app-mockup' src="assets/reading-list.png" alt="william blake painting">
+            </div>
+            <p>
+We will divide this tutorial in 3 parts, each time refactoring the same app. The stages have to do with how we store and handle data inside our app:
+            </p>
+            <ol>
+                <li>
+Local, non-persisted list of books
+                </li>
+                <li>
+List of books made persistent with outside API
+                </li>
+                <li>
+Outside API + centralized state
+                </li>
+            </ol>
+        </section>
+        <section id="part-one">
+            <h2>Part I: Local, non-persisted list of books</h2>
+            <section id="initial-setup">
+                <h3>Initial Set Up</h3>
+                <p>
+To get started we'll prepare a minimal Hello World example:
+                </p>
+                <ol>
+                    <li>
+Create new project by using npx create-react-app books-app. That will set up sample project. 
+                    </li>
+                    <li>
+To run the server, cd to the project directory and type npm start. You can now use Live Server extension from vsCode to see the sample page.
+                    </li>
+                    <li>
+Delete all files from src and public dirs (except index.html in public) - We'll start from scratch.  
+                    </li>
+                    <li>
+Inside /src create two files: index.js, App.js
+                    </li>
+                </ol>
+                <div class="code-snippet">
+                    <pre>
+                        <code>
+// index.js initial setup
+import ReactDOM from 'react-dom/client';
+import App from './App';
+
+const el = document.getElementById('root');
+const root = ReactDOM.createRoot(el);
+
+root.render(&ltApp />);
+                        </code>
+                    </pre>
+                
+                </div>
+                <p>
+                <div class="thinking-react">
+                    <h4>How Does It Work?</h4>
+                    <p>
+In index.js we define a root - a place where html code is going to be injected. React will render all components (App and all its children), transpile it into html/plainJS code, bundle it and inject it inside a div with id of 'root' in our index.html, hence getElementById
+                    </p>
+                </div>
+                </p>
+                <div class="code-snippet">
+                    <pre>
+                        <code>
+function App() {
+    return &ltdiv>HOLA!&lt/div>
+}
+
+export default App;
+                        </code>
+                    </pre>
+                
+                </div>
+                <div class="thinking-react">
+                    <h4>How Does It Work?</h4>
+                    <p>
+Component is a function that returns JSX. JSX is a syntax extension to JavaScript, <a href="https://reactjs.org/docs/introducing-jsx.html">read here</a>. 
+                    </p>
+                    <p>
+Export default App allows to export this function to another file. That file can then import it without use of curly braces and we can name the variable for the module as we like.
+                    </p>
+                </div>
+
+            </section>
+
+            <section id="components-diagram">
+                <h3>Components Diagram</h3>
+                <p>
+After the initial set up, first step in developing a React app is thinking about components and its hierarchy. Create a diagram to visualize what components we'll need                
+                </p>
+                <div class="image">
+                    <img id='components-diagram-img' src="assets/components-diagram.png" alt="components diagram">
+                </div>
+                <p>
+This is the hierarchy of components that will work for this app. At the top level we need to display a container allowing to add books (BookCreate component), and another one that displays the book cards (BookList component). Then, inside BookList, we need a component for each individual book (BookShow) and for each book card, a component for editing the book.
+                </p>
+            </section>
+
+            <section id="boilerplate-for-components">
+                <h3>Boilerplate for each component</h3>
+                <p>
+Next, create boilerplate code for components inside /src/components : BookCreate.js, BookEdit.js, BookList.js, BookShow.js. The set up is now finished.            
+                </p>
+
+                <div class="code-snippet">
+                    <pre>
+                        <code>
+// &ltComponentName>.js initial setup - boilerplate for each component.
+
+function ComponentName() {
+    return &ltdiv>ComponentName&lt/div>
+}
+
+export default ComponentName;
+                        </code>
+                    </pre>
+                
+                </div>
+            </section >
+
+            <section id="states-props-first-approx">
+                <h3>States and Props. First approximation</h3>
+                <p>
+Let's think about logic of our app. First question we should ask ourselves is: how and where do we store the books? For the first approximation, let each book be an object with 'id' and 'title' properties. The objects will sit inside an array.
+                </p>
+                <p>
+Each time we add a book object to books array, we want content on the screen updated and displayed accordingly. This is a perfect use case for a State System. Let's call this state books.     
+                </p>
+                <p>
+How will it look in our app? Well, BookCreate component should be responsible for updating books state. BookList will use this state to display a list of all books. For each element of books array in BookList, we will produce separate component named BookShow.
+                </p>
+                <p>
+But first, we need to see two fundamental things: how to create component hierarchy and how to share data between them.
+                </p>
+                <ol>
+                    <li>
+to create a relationship between components just import child component to a parent component, then place it as a part of JSX return statement, much like a self-closing tag.         
+                    </li>
+                    <li>
+to share some data with child component, we use Props System. In the snippet below, notice the messageForChild inside BookCreate (looks just like a HTML attribute). This bit of JSX allows us to make that attribute avaliable in the child component. We grab it by receiving a props object (first argument to child component function). Said object will have a property of the name you specified and hold the value. Usually it's being destructured straightaway, get familiar with this syntax, see below:
+                    </li>
+                </ol>
+                <div class="code-snippet">
+                    <pre>
+                        <code>
+// parent component, App.js
+import BookCreate from "./BookCreate";
+
+function App() {
+    const message = 'message from a parent!'
+    return (
+        &ltdiv>
+            HOLA!
+            &ltBookCreate messageForChild={message} />
+        &lt/div>
+    )
+}                            
+export default App;
+                        </code>
+                    </pre>
+                
+                </div>
+                <div class="code-snippet">
+                    <pre>
+                        <code>
+// child component, BookCreate.js
+function BookCreate({ messageForChild }) {
+    return (
+    &ltdiv>
+        BookCreate: {messageForChild}
+    &lt/div>
+    )
+}
+
+export default BookCreate;
+                        </code>
+                    </pre>
+                
+                </div>
+                <p>
+Ok, let's come back to the state. Where should we define it? The rule is: find all the components that are going to need to use this state, then define the state in the lowest common parent.
+                </p>
+                <p>
+Each time we find ourselves wanting to update content on the screen, we should think - State System. Why so? in React, on each state update, the component the state is defined in is getting re-rendered, as well as all its children.                
+                </p>
+                </div>
+                <div class="code-snippet">
+                    <pre>
+                        <code>
+// App.js - Define State
+
+import { useState } from 'react';
+function App() {
+    const [books, setBooks] = useState([]) //first argument is default value
+
+...
+                        </code>
+                    </pre>
+                
+                </div>
+                <div class="thinking-react">
+                    <h4>Thinking React</h4>
+                    <p>
+setBooks function should be called each time we want to update the state. Never update state directly by trying to do something like myState = 'newState'! Only by using setter function we get the re-render functionality which is the whole point of using state.
+                    </p>
+                </div>
+            </section>
+
+            <section id="modifying-state-workflow">
+                <h3>Modifying the state: workflow</h3>
+                <p>
+We've got the state, it's time to modify it. After all, we want to create, edit and delete books. First action we set our mind to is: when we enter new book title and hit Enter (or click Submit), new book card should appear.           
+                </p>
+                <p>
+Look at the diagram - what we need to facilitate is a communication from a child component (BookCreate) to a parent component (App). We have an App component that has our books state defined there, and a BookCreate component from where an action should be initiated. In more detail: in BookCreate, we need to submit a form, grab the value entered and use it to update books state.       
+                </p>
+                <div class="thinking-react">
+                    <h4>Thinking React</h4>
+                    <p>
+To achieve child-to-parent communication think: Event Handlers + State. Define a function inside the component where the state you want to update resides, then pass it down using Props System to the child component you want to use it in. Call the passed function and Voila! Parent state gets updated from within child component.
+                    </p>
+                </div>
+                <div class="code-snippet">
+                    <pre>
+                        <code>
+// 1/2 Event handler for child-to-parent communication: PARENT
+// App.js
+
+import { useState } from "react";
+import BookCreate from './components/BookCreate'
+
+function App() {
+    const [books, setBooks] = useState([]);
+    const createBook = (title) => {
+        const updatedBooks = [
+            ...books,
+            { id: Math.round(Math.random() *9999), title }
+        ];
+        setBooks(updatedBooks);
+    };
+
+    return (
+        &ltdiv>
+            {JSON.stringify(books)}
+            &ltBookCreate onCreate={createBook} />
+        &lt/div>
+    )	
+}
+
+export default App;
+                        </code>
+                    </pre>
+                
+                </div>
+                <div class="code-snippet">
+                    <pre>
+                        <code>
+// 2/2 Event handler for child-to-parent communication: CHILD 
+// + form/input handling (controlled input)
+//BookCreate.js
+
+import { useState } from "react";
+
+function BookCreate( {onCreate} ) {
+
+    const [title, setTitle] = useState('')	
+    const handleChange = (event) => setTitle(event.target.value);}
+    const handleSubmit = (event) => {
+        event.preventDefault();
+        onCreate(title);
+        setTitle('')
+    }
+
+    return (
+        &ltdiv>
+            &ltform onSubmit={handleSubmit}>
+                &ltlabel>Title&lt/label>
+                &ltinput value={title} onChange={handleChange} />
+                &ltbutton>Create!&lt/button>
+            &lt/form>
+        &lt/div>
+    )
+}
+export default BookCreate;
+                        </code>
+                    </pre>     
+                </div>
+                <p>
+You should be now be able to add books and see the changing state on the screen as a string representation of an object (JSX won't render an object, it will display nothing, hence the stringification).  
+                </p>
+                <p>
+There's definetly a lot to unpack here. There are four key pieces to understand above snippet:
+                </p>
+                <ol>
+                    <li>
+default browser behavior with forms                        
+                    </li>
+                    <li>
+the way input is handled in react apps
+                    </li>
+                    <li>
+child-to-parent communication (already mentioned)
+                    </li>
+                    <li>
+correct state update (mentioned in the next section)
+                    </li>
+                </ol>
+                <div class="thinking-react">
+                    <h4>How Does It Work?</h4>
+                    <p>
+Default browser behavior around form and input elements looks as follows: 
+                    </p>
+                    <ul>
+                        <li>
+If you wrap input html tag in html form tag, you can then listen for an onSubmit event triggered when user hits Enter key or submit button that sits inside a form.
+                        </li>
+                        <li>
+The default behavior of onSubmit is that the browser collects the data from input fields and tries to make a network request with them like so: myapp.com?email=a@company.com&pass=abc (given that there were two input fields: 'email' and 'pass'). Consequently it causes the browser to reload the page. We can't have that happening so we need to disable this behavior. To do so, we need one more piece of information. 
+                        </li>
+                        <li>
+Any time we wire-up an event handler on an plain JSX element, we are going to have our event handler receive an event object. We can use this object to disable above behavior (event.preventDefault).              
+                        </li>
+                        
+                    </ul>
+                </div>
+                <div class="thinking-react">
+                    <h4>Thinking React</h4>
+                    <p>
+The way form and input is handled in above code is important and it's a correct, React way. We can summarize it in 5 steps:
+                    <ol>
+                        <li>Create a new piece of state (for storing the input field value)</li>
+                        <li>Create an event handler to watch for the input's onChange event (triggered when user adds, deletes, paste, cuts some text inside input field)</li>
+                        <li>When the onChange event fires, inside the handler, retrieve the value from the input (using event object) </li>
+                        <li>Use this value to update state created in step one</li>
+                        <li>Pass your state to the input as the value prop. (e.g. &ltinput value='xd' /> forces input field to display 'xd').</li>
+                    </ol>
+                    <p>
+Look at this workflow: user types in input &rarr; browser updates the text in the input &rarr; browser triggers an event as the input gets updated &rarr; we retrieve the value from the input and update state &rarr; state gets updated and components re-render &rarr; we provide value prop to input &rarr; value of the input changes.
+                    </p>
+                    <p>
+It seems kind of redundant. Why do we need to forcibly tie input value to a state (if i press 'a', why do I need to go through all that jazz just to overwrite the input field as 'a' that was already there - seems weird enough)?
+                    </p>
+                    <p>
+The reason is: we want to take control over the value of the input and manage it only through state system! It is more robust than writing alternative code like document.querySelector('input').value. It helps us in two main ways:
+                    </p>
+                    <ol>
+                        <li>we have now one place where we can read and update the input </li>
+                        <li>more importantly though, our component re-renders with every keypress (state change), and it's easy to add more advanced features like restricting users from writing down certain characters and adding some custom logic.</li>
+                    </ol>
+                    <div class="code-snippet">
+                        <pre>
+                            <code>
+// Input value modification example
+
+...	
+const handleChange = (event) => {
+    setTitle(event.target.value.replace(/[0-9]/, ''););
+    //input values can only be letters now
+}
+...
+return (
+    &ltdiv>
+        &ltform onSubmit={handleSubmit}>
+            Confirm your search: {myInputValue}
+            &ltlabel>Title&lt/label>
+            &ltinput value={title} onChange={handleChange} />
+            {myInputValue,length &lt3 && input value must be longer}
+            //input validation
+            &ltbutton>Create!&lt/button>
+        &lt/form>
+    &lt/div>
+)
+}
+...
+                            </code>
+                        </pre>
+                    </div>
+
+                </div>
+            </section>
+
+            <section id="modifying-state-objects-arrays">
+                <h3>Modifying the state: be careful around objects and arrays</h3>            
+                <p>
+Success! We got our child-to-parent communication down and our 'create book' functionality implemented. We have discussed the workflow but now let's focus on the actual handler that modifies the state. Remember, our books state is an array of objects. When we try to update arrays or objects, some extra caution is due.                
+                </p>
+                <p>
+You might be tempted to update state by doing something like below: 
+                </p>
+                <div class="code-snippet">
+                    <pre>
+                        <code>
+
+// WRONG WAY OF UPDATING STATE:
+
+...
+
+function MyComponent() {
+    ...
+    const [stateArray, setStateArray] = useState([{id:1, name: 'name'}]);	
+    const handleAction = (value) => {
+        stateArray.push({id:2, name: 'name2'});
+        setStateArray(stateArray);
+    }
+    ...
+                        </code>
+                    </pre>
+                </div>
+                <p>
+Never do that! Though, it might seem we have done good, since we used setter function instead of updating state directly, the re-render won't actually be triggered and our update won't be displayed. We should remember to always create a new array upon state update as we did in createBook handler inside App.js
+                </p>
+                <div class="thinking-react">
+                    <h4>How Does It Work?</h4>
+                    <p>
+When we try to add, delete, modify values inside an array that is a state, the re-render behavior won't be triggered. It is because React will not care about the contents of an array being changed, it cares only about the reference to the object that we provided as a state. So, in the 'wrong way...' example, the 'new state' we provided (although with new values in the array) will be read as an 'current state' - as if nothing changed - hence no re-render. When dealing with objects or arrays, always create a new one (instead of modifying the existing one) upon each state update so that React sees the pointer to an object in memory has actually changed - and trigger re-render behavior as expected. Below see snippets showing how to update React states that are objects or arrays:
+                    </p>
+
+
+                    <div class="code-snippet">
+                        <h4 id="inserting">Inserting Array Elements In React State System </h4>
+                        <pre>
+                            <code>
+...
+const [colors, setColors] = useState(['red', 'green', 'blue']);
+
+const addColor = (stateArray, setter, newItem) => {
+    const updatedArray = [
+        ...stateArray,
+        newItem
+    ]
+    setter(updatedArray);
+}
+                            </code>
+                        </pre>
+                    </div>
+                    <div class="code-snippet">
+                        <h4 id="inserting-index">Inserting Array Elements At Given Index In React State System </h4>
+                        <pre>
+                            <code>
+...
+const [colors, setColors] = useState(['red', 'green', 'blue']);
+
+const AddColorAtIndex = (array, setter, newItem, index) => {
+    const updatedArray = [
+        ...array.slice(0, index),
+        newItem,
+        ...array.slice(index)
+    ];
+        setter(updatedArray);
+}
+                            </code>
+                        </pre>
+                    </div>
+                    <div class="code-snippet">
+                        <h4 id="removing">Removing Array Elements In React State System</h4>
+                        <pre>
+                            <code>
+...
+const [colors, setColors] = useState(['red', 'green', 'blue']);
+
+const removeColor = (array, setter, itemToRemove) => {
+    const updatedArray = array.filter((item) => {
+        return item !== itemToRemove
+    });
+    setter(updatedArray);
+};
+// filter always returns a new array so it's a good fit for using with state system. 
+                            </code>
+                        </pre>
+                    </div>
+                    <div class="code-snippet">
+                        <h4 id="modifying-object">Modifying Object Properties In React State System </h4>
+                        <pre>
+                            <code>
+...
+defaultState = [
+    {id: 1, title: 'Harry Potter' },
+    {id: 2, title: 'Harry Potter 2' },
+]
+const [books, setBooks] = useState(defaultState);
+
+const updatePropertyOfBookWithId = (state, id, property, newPropertyValue) => {
+    const updatedBooks = state.map((obj) => {
+        if (obj.id === id) {
+            return {...obj, [property]: newPropertyValue};
+        }
+        return obj;
+    });
+    setBooks(updatedBooks);
+};
+
+// recreate object to create new reference so that if this object will be passed as a prop it will be rerendered. 
+// also, see that object is created by unpacking it into new, then overwriting property we want updated.
+                            </code>
+                        </pre>
+                    </div>
+            </div>
+            </section>
+
+            <section id="use-map-function">
+                <h3>Use of map function</h3>
+                <p>
+Great, we got functionality to add books (CreateBook component updates books state). Let's display them. Remember that to do so, we need to pass our books state down into BookList.
+                </p>
+                <p>
+Import BookList into App. Add BookList component with prop called books to App return statement. In BookList.js receive the books prop. The only job of BookList is to be a container of individual books. That means we want this component to return multiple BookShow components. To achieve that, let's map the received books onto new array in a way that for each book in books, this new array holds BookShow components with props representing title and id of a given book. 
+                </p>
+                <div class="code-snippet">
+                    <pre>
+                        <code>
+
+//BookList.js
+import BookShow from "./BookShow";
+
+function BookList({ books }) {
+
+    const renderedBooks = books.map((book) => &ltBookShow key={book.id} book={book} />)
+    return &ltdiv>{renderedBooks}&lt/div>
+}
+
+export default BookList;
+                        </code>
+                    </pre>
+                </div>
+                <p>
+To test this, go to BookShow and make it return book title. Try out our first functionality!
+                </p>
+                <p>
+You might have noticed there is a key prop in BookShow. If you investigate prop object passed to BookShow, key won't show up there. It is a special prop used interanlly by React to help decide whether to re-render of components or not (optimization step).
+                </p>
+            </section>
+
+            <section id="deleting-components">
+                <h3 >Deleting Components</h3>
+                <p>
+Savor this moment for a while, but let's not rest on our laurels! We have more functionalities to implement. Let's tackle book deletion next.                 
+                </p>
+                <p>
+In our mockup we see that when we click on 'X' button, the book should be deleted. Styling aside, from functional perspective, we need to facilitate a communication between BookShow (where 'X' button is) and App (where books state is defined). We did something like that already. It should be handled by a event handler defined in App that gets passed down as a prop to BookShow. When user clicks a delete button our newly defined handler will be called, books' state updated, and components re-rendered. Easy as!                
+                </p>
+                <p>
+Create deleteBookById and pass it all the way to BookShow as a onDelete prop. in BookShow, create a button for deletion and assign our passed onDelete funcion to its onClick event. Deletion should now work               
+                </p>
+                <p>
+                    Notice, that in BookShow we don't pass the function directly but we wrap it in an arrow function. It is so because if we didn't the onDelete would be called immediately and could get stuck in infinite update state, trigger rerender loop. We want to pass a function to be called onClick, not the result of it. 
+                </p>
+                <div class="code-snippet">
+                    <pre>
+                        <code>
+//App.js
+
+...
+function App() {
+    ...
+    const deleteBookById = (id) => {
+        const updatedBooks = books.filter((book) => book.id !==id);
+        setBooks(updatedBooks);    
+    }
+    ...
+    return (
+    &ltdiv>
+        &ltBookCreate onCreate={createBook} />
+        &ltBookList books={books} onDelete={deleteBookById} />	
+    &lt/div>
+    )
+}
+                        </code>
+                    </pre>
+                </div>
+                <div class="code-snippet">
+                    <pre>
+                        <code>
+//BookShow.js
+
+function BookShow({ book, onDelete }) {
+
+    return (
+        &ltdiv>
+            {book.title}
+            &ltdiv>
+                &ltbutton onClick={() => onDelete(book.id)}>Delete&lt/button>
+            &lt/div>
+        &lt/div>
+    )
+}
+
+export default BookShow;
+                        </code>
+                    </pre>
+                </div>
+            </section>
+            <section id="editing-components">
+                <h3>Editing Components</h3>
+                <p>
+Look at to the mockup - we have two 'modes' our book card can be in. It can be in, let's call it, 'display mode' and in 'edit mode'. In 'edit mode' an additional input field and submit button are presented to the user. User should be able to navigate to 'edit mode', type corrected book title and confirm it with Submit. Once Submit is hit, user should expect book card to return to 'display mode'.
+                </p>
+                <p>
+There are two pieces of functionality to cover here: book updates and toggle between two modes.
+                </p>
+
+                <section id="editing-components-toggle">
+                    <h4>Toggle</h4>
+                    <p>
+We will start with toggling functionality. 'Edit mode' will be represented as a separate component with an appropriate form capturing user input. By default, this component won't be used. It will replace a spot occupied by book title only when user clicks Edit button.
+                    </p>
+                    <p>
+Translating it into React lingo, we want BookShow component to display either book title or BookEdit component.                
+                    </p>
+                    <p>
+Importantly, each click on Edit should result in change in content on a screen. That phrase always means we need to define a state! Let's define this state as showEdit. It will be a boolean. Depending on showEdit we will return different JSX (with title or with BookEdit).                
+                    </p>
+                    <div class="code-snippet">
+                        <pre>
+                            <code>
+//BookShow.js
+
+import { useState } from "react";
+import BookEdit from "./BookEdit";
+
+function BookShow({ book, onDelete }) {
+    
+    const [showEdit, setShowEdit] = useState(false);
+
+    let content = !showEdit ? &lth3>{book.title}</h3> : &ltBookEdit book={book} />;
+    return (
+        &ltdiv>
+            {content}
+            &ltdiv>
+                &ltbutton onClick={() => onDelete(book.id)}>Delete</button>
+                &ltbutton onClick={() => setShowEdit(!showEdit)}>Edit</button>
+            &lt/div>
+        &lt/div>
+    )
+}
+
+export default BookShow;
+                            </code>
+                        </pre>
+                    </div>
+                    <p>
+That's it, we got ourselves an edit mode toggle! Create some boilerplate code inside BookEdit component to confirm it works so far.
+                    </p>
+                </section>
+                <section id="editing-components-edit-form">
+                    <h4>Edit form</h4>
+                    <p>
+Next thing is to implement the actual BookEdit component. Create form, input and button. As before, if you got input to implement, think of state system because that's the correct way of managing it in React. Steps are basically the same as before. 
+                    </p>
+                    <p>
+One subtlety: when we click on Edit, we want our existing title to be a default input value. Again, we now handle form elements as a state so all we need to do is set default state as book title (we need to make book available by passing it down to BookEdit).             
+                    </p>
+                    <div class="code-snippet">
+                        <pre>
+                            <code>
+//BookEdit.js
+
+import { useState } from "react";
+
+function BookEdit() {
+
+    const [title, setTitle] = useState('');
+    const handleSubmit = (event) => {
+        event.preventDefault();
+    }
+    return (
+    &ltdiv>
+        &ltform onSubmit={handleSubmit}>
+            &ltlabel>Edit Book Title&lt/label>
+            &ltinput value={title} onChange={(event) => setTitle(event.target.value)} />
+            &ltbutton>Save&lt/button>
+        &lt/form>
+    &lt/div>
+    )
+}
+
+export default BookEdit;
+                            </code>
+                        </pre>
+                    </div>
+                </section>
+                <section id="editing-components-edit-books-handler">
+                    <h4>Edit Component - Event Handler</h4>
+                    <p>
+So far so good. BookEdit component is all wired up, now let's extend it so that it can make changes to books state. Change should be triggered when form is submitted, so when handleSubmit function is called. As before with child-to-parent communication, in App, define an editBookById event handler, pass it down to the BookEdit component as onEdit prop, and call it inside handleSubmit. Any time user presses Save, the state should be updated, and components re-rendered.
+                    </p>
+                    <div class="code-snippet">
+                        <pre>
+                            <code>
+//App.js
+...
+function App() {
+    ...
+    const editBookById = (id, newTitle) => {
+        const updatedBooks = books.map((book) => {
+            if (book.id === id) {
+                return { ...book, title:newTitle };
+            }
+            return book;
+        });
+        setBooks(updatedBooks);
+    };
+
+    return (
+    &ltdiv>
+        &ltBookList books={books} onDelete={deleteBookById} onEdit={editBookById}/>
+        &ltBookCreate onCreate={createBook} />
+    &lt/div>
+    )
+}
+//don't forget to pass onEdit down to BookEdit
+                            </code>
+                        </pre>
+                    </div>
+                    <div class="code-snippet">
+                        <pre>
+                            <code>
+//BookEdit.js
+
+import { useState } from "react";
+
+function BookEdit({ book, onEdit }) {
+
+    const [title, setTitle] = useState('');
+    const handleSubmit = (event) => {
+        event.preventDefault();
+        onEdit(book.id, title);
+    }
+    return (
+        &ltdiv>
+            &ltform onSubmit={handleSubmit}>
+                &ltlabel>Edit Book Title&lt/label>
+                &ltinput value={title} onChange={(event) => setTitle(event.target.value)} />
+                &ltbutton>Save&lt/button>
+            &lt/form>
+        &lt/div>
+    )
+}
+
+export default BookEdit;
+                            </code>
+                        </pre>
+                    </div>
+                </section>
+                <section id="editing-components-toggle-back">
+                    <h4>Toggle back to default mode upon submit</h4>
+                    <p>
+Edit works now but there's a bug. We edit, hit save, and nothing appears to have changed. The changes did indeed occur but the card doesn't come back to default mode giving us this bad user experience. It's easy to figure out now that the function responsible for submitting the form should also take care of toggling back to default mode. We could create a new handler for toggling the state, pass it do BookEdit and it would work fine, but this isn't maintainable solution, because then we'd have two separate handlers that take care of the same action - a bit redundant. What can we do to remedy that state is to change a chain of passing props a little bit. Instead of the chain being:
+                    </p>
+                    <p>
+'In App, define editBookById. Pass it as onEdit prop all the way to the BookEdit',
+                    </p>
+                    <p>
+tweak it like so:
+                    </p>
+                    <p>
+'In App, define editBookById. Pass it as onEdit prop all the way to BookShow. In BookShow create new handler, handleEditSubmit that will act as a wrapper and call onEdit and setShowEdit thus setting showEdit back to false' 
+                    </p>
+                    <div class="code-snippet">
+                        <pre>
+                            <code>
+//BookShow.js
+
+import { useState } from "react";
+import BookEdit from "./BookEdit";
+
+function BookShow({ book, onDelete, onEdit }) {
+    
+    const [showEdit, setShowEdit] = useState(false);
+    const handleEditSubmit = (id, title) => {
+        onEdit(id, title);
+        setShowEdit(!showEdit);
+    }
+
+    let content = !showEdit ? &lth3>{book.title}&lt/h3> : &ltBookEdit book={book} onEdit={handleEditSubmit} />;
+    return (
+        &ltdiv>
+            {content}
+            &ltdiv>
+                &ltbutton onClick={() => onDelete(book.id)}>Delete</button>
+                &ltbutton onClick={() => setShowEdit(!showEdit)}>Edit</button>
+            &lt/div>
+        &lt/div>
+    )
+}
+
+export default BookShow;
+                            </code>
+                        </pre>
+                    </div>
+                </section>
+            </section>
+
+            <section id="first-part-done">
+                <h3>First Part Done!</h3>
+                <p>
+It's big. First iteration of our Books App is now finished and it works! There are ways to improve design of this app, especially ways in which books are being stored. We'll get there! 
+                </p>            
+                <p>
+For now, try to reproduce this app without copy-pasting. Once you feel you've got all the concepts introduced so far down, come back.
+                </p>
+
+            </section>
+        
+        </section>
+        <section id="part-two">
+            <h2>Part II: Data persistence with outside API</h2>
+            <p>
+In current version of the app list of books disappears on refresh. We should do something about it. We should create an API and store books in a database.                  
+            </p>
+            <p>
+How to make data persist? 
+            </p>
+            <ol>
+                <li>
+Create an API
+                </li>
+                <li>
+On App startup, make an API request to get current list of books
+                </li>
+                <li>
+On each CRUD action update the server, then our local state.
+                </li>        
+            </ol>
+            <p>
+All of our functions for data manipulation (editBookById, deleteBookById, createBook) currently operate on books piece of state. We need to tweak it so it also interacts with the server. The logic will be simillar; we'll keep the state and functions but on each action, say, delete books, the function will first call the api, delete the book and only when it recevies OK response, it will update the state. That way we keep our data in sync.
+            </p>
+            <section id="json-server">
+                <h3>JSON Server</h3>
+                <p>
+Our App will be responsible only for fetching and writing data to the database. To keep our focus on React we'll use JSON Server to mock out back-end.  
+                </p>
+                <section id="json-server-install">
+                    <h4>Install JSON Server</h4>
+                    <ol>
+                        <li>
+go to console, type npm install json-server inside your project's root directory
+                        </li>
+                        <li>
+create db.json file in root folder  
+                        </li>
+                        <li>
+Go to /package.json file and append a command to run json-server: it is done by adding a key:pair under already existing property of "scripts". The key:pair should look like this: 
+                            <div class="code-snippet">
+                                <pre>
+                                    <code>
+"scripts": {
+...
+    "server": "json-server -p 3001 --watch db.json",
+...
+},
+                                    </code>
+                                </pre>
+                            </div>
+                        </li>
+                        <li>
+run the command: npm run server  
+                        </li>
+                    </ol>
+                    <p>
+As you see, from now on it takes two commands to start a project - we have two servers running. One, for the app (localhost:3000), one for JSON Server (localhost:3001). 
+                    </p>
+                </section>
+
+                <section id="json-server-interact">
+                    <h4>How to interact with JSON Server?</h4>
+                    <p>
+Go to db.json we just created and add a new object like so:
+                    </p>
+                    <div class="code-snippet">
+                        <pre>
+                            <code>
+// db.json
+
+{
+    "books": []
+}
+                            </code>
+                        </pre>
+                    </div>
+                    <p>
+It will create a "table" available to us under route of localhost:3001/books. We can now send a HTTP request to populate our "database".
+                    </p>
+                    <p>
+Let's test it. You can use Insomnia or any other api client. It is a good option to use Rest Client extension from VSCode. You use it by creating new .http file inside your project directory and run it from there (Send Request icon will show up in the editor above correctly typed api request). It has a nice side effect: by interacting with your api you create a reference for other developers that might want to use your project.           
+                    </p>
+                    <div class="code-snippet">
+                        <pre>
+                            <code>
+//api.http
+
+GET http://localhost:3001/books HTTP/1.1
+Content-Type: application/json
+
+### //three hashes indicate you want to create separate request
+
+POST http://localhost:3001/books HTTP/1.1
+Content-Type: application/json
+
+{
+    "title": "Harry Potter"
+}
+
+###
+
+PUT http://localhost:3001/books/1 HTTP/1.1
+Content-Type: application/json
+
+{
+    "title":"Barry Porter"
+}
+
+###
+
+DELETE http://localhost:3001/books/1 HTTP/1.1
+Content-Type: application/json
+                            </code>
+                        </pre>
+                    </div>
+                </section>
+            </section>  
+            <section id="updating-handlers">
+                <h3>Updating Event Handlers for API interaction</h3>
+                <p>
+Let's start with creating a new record in db -  we need to update  createBook inside App.js to first add record to db and only then update books state. To make a request in our code use Axios library (remember to npm install axios). We also need to change function to async because we make a request and that takes time. It should now look like this:
+                </p>
+                <div class="code-snippet">
+                    <pre>
+                        <code>
+// App.js
+
+import axios from 'axios';
+...
+
+const createBook = async (title) => {
+    const response = await axios.post('http://localhost:3001/books',{title});
+    const updatedBooks = [
+            ...books,
+            response.data
+    ];
+    setBooks(updatedBooks);
+};
+                        </code>
+                    </pre>
+                </div>
+                <p>
+Second step is to fetch the list of book on app start. The function is easy to figure out, but where should we call it? If you just call it inside the component, it will be stuck in infinite loop of fetching data - updating state - rerender.  
+                </p>
+                <div class="code-snippet">
+                    <pre>
+                        <code>
+// App.js
+
+...
+
+const fetchBooks = async () => {
+    const response = await axios.get('http://localhost:3001/books');
+    setBooks(response.data);
+}                                               
+                        </code>
+                    </pre>
+                </div>
+            </section>
+            <section id="use-effect">
+                <h3>useEffect</h3>
+                <p>
+To make it work we need to introduce new React feature (hook function): useEffect. We import it from react and it can be used to run code when a component is initially rendered but not later on. It can be setup to work on re-render depending on conditions too. it takes two arguments, first is a function we want called, second controls whether we want function execute on rerender (it can either be called on each rerender or depending on some variable change like so [variableWeWantToTriggerRerender]). 
+                </p>
+                <div class="code-snippet">
+                    <pre>
+                        <code>
+//App.js
+
+...
+useEffect(() => {
+    fetchBooks();
+    }, [])                                               
+                        </code>
+                    </pre>
+                </div>
+                <p>
+Let's now make editBookById and deleteBookById work. It uses the same logic as createBook so it should be straightforward. As an exercise try to add another attribute to books, like pages or year. All you need is already written. 
+                </p>
+                <div class="code-snippet">
+                    <pre>
+                        <code>
+//App.js
+...
+const editBookById = async (id, newTitle) => {
+    const response = await axios.put(`http://localhost:3001/books/${id}`, {title: newTitle});
+    const updatedBooks  =  books.map((book) => {
+        if (book.id === id) {
+            console.log(response.data)
+            return { ...book, ...response.data };
+        }
+        return book;
+    });
+    setBooks(updatedBooks);
+};                                                                 
+                        </code>
+                    </pre>
+                </div>
+                <div class="code-snippet">
+                    <pre>
+                        <code>
+//App.js
+...
+const deleteBookById = async (id) => {
+    await axios.delete(`http://localhost:3001/books/${id}`);
+    const updatedBooks = books.filter((book) => book.id !==id);
+    setBooks(updatedBooks);
+}                                                                 
+                        </code>
+                    </pre>
+                </div>
+            </section>
+        </section>
+        <section id="part-three">
+            <h2>Part III: Outside API + centralized store: Contex System</h2>
+            <p>
+On to the last part. Context is another way of sharing data between components in React. With Context, we can share information between components even if they don't have a direct link. It is not a replacement of Props or Redux!              
+            </p>
+            <section id="using-context">
+                <h3> Using Context</h3>
+                <ol>
+                    <li>
+Create a Context Object
+                    </li>
+                    <li>
+Specify the data to share     
+                    </li>
+                    <li>
+Access the data in a component
+                    </li>
+                </ol>
+                <section id="context-create-context">
+                    <h4>Create a Context Object</h4>
+                    <p>
+To Create a context we usually create a new file. It's good idea to create new folder for context files like so ../src/context/mycontext.js                    
+                    </p>
+                    <div class="code-snippet">
+                        <pre>
+                            <code>
+// myContext.js
+
+import { createContext } from 'react'
+
+const MyContext = createContext();
+
+export default MyContext;
+                            </code>
+                        </pre>
+                    </div>
+                    <p>
+Context object has two main properties inside it: Provider and Consumer (we won't use Consumer in this tutorial). Provider is used to specify what data we want to share.                
+                    </p>
+                </section>
+                <section id="context-specify-data">
+                    <h4>Specify the data to share</h4>
+                    <div class="code-snippet">
+                        <pre>
+                            <code>
+//inside a component you want to have access to the context
+
+import MyContext from './context/myContext';
+...
+&ltMyContext.Provider value={5}>
+    &ltMyComponent />
+&lt/MyContext.Provider>
+                            </code>
+                        </pre>
+                    </div>
+                    <p>
+Value prop above is special. This is what will be shared with MyComponent and its children. Value can be anything. MyComponent and its children now has access to the value shared in context because it is wrapped by MyContext.Provider                      
+                    </p>
+                </section>
+                <section id="context-consume-data">
+                <h4>Access the data in a component</h4>
+                <p>
+To access the data, first import useContext hook - it is able to access the value from context. Then import the Context object. You can now use useContext to retrieve value from MyContext. Remember, it will work only if MyComponent or its parent is wrapped by MyContext.Provider
+                </p>
+                <div class="code-snippet">
+                    <pre>
+                        <code>
+import { useContext } from 'react'; 
+import MyContext from './context/myContext';
+
+function MyComponent() {
+    const num = useContext(MyContext);
+    return &ltdiv>{numn&lt/div>;                         
+                        </code>
+                    </pre>
+                </div>
+
+                </section>       
+            </section>
+            <section id="context-in-our-app">
+                <h3>Context in our App</h3>
+                <p>Let's now implement Context in our app.</p>
+                <ol>
+                    <li>
+                        <p>create ./src/books/books.js</p>
+                        <div class="code-snippet">
+                            <pre>
+                                <code>
+// books.js
+
+import { createContext } from 'react'
+
+const BooksContext = createContext();
+
+export default BooksContext;                        
+                                </code>
+                            </pre>
+                        </div>
+                    </li>
+                    <li>
+In index.js wrap App component with BookContext and specify the value to share like so:
+                        <div class="code-snippet">
+                            <pre>
+                                <code>
+// index.js
+
+import BooksContext from './context/books';
+....
+
+root.render(
+&ltBooksContext.Provider value={5}>
+    &ltApp /> 
+&lt/BooksContext.Provider>
+);              
+                                </code>
+                            </pre>
+                        </div>
+                    </li>
+                    <li>
+                        <p>Let's try to retrieve it: go to an App child component (so any component in our case), so for example in BookList.js</p>
+                        <div class="code-snippet">
+                            <pre>
+                                <code>
+// BookList.js
+
+import { useContext } from 'react';
+import BooksContext from './context/books';
+...
+function BookList({ books, onDelete, onEdit }) {
+
+    const valueFromContext = useContext(BooksContext)
+...
+return &ltdiv className="book-list">{renderedBooks}{valueFromContext}&lt/div>
+...     
+                                </code>
+                            </pre>
+                        </div>
+                    </li>
+                </ol>
+                <p>
+It works. But it's not very handy to manually change context value as its static at the moment. We want to make it dynamic, to change over time and each time it changes, update content on a screen.  So we know we need to define state. But how and where? 
+                </p>
+            </section>
+            <section id="context-custom-context">
+                <h3>Custom Context Provider - the tricky part</h3>
+                <p>
+First off, if we want to have a dynamic instead of hardcoded value (let's say we want to have a value that gets incremented/decremented when we click a proper button and that updated value is displayed on screen) we need to take these steps: 
+                </p>
+                <ol>
+                    <li>
+in Provider's value prop, we need to pass an object that would store a value we want to access, together with a function that updates that value in some way, like this:
+                    </li>
+                    <div class="code-snippet">
+                        <pre>
+                            <code>
+&ltBookContext.Provider value={
+    {
+        value,
+        incrementValue,
+        decrementValue,
+    }
+}/> 
+                            </code>
+                        </pre>
+                    </div>
+                    <li>
+Since we need re-render on value change, we make value into a piece of state and updateValue will internally call value's setter function thus achieving re-render.                      
+                    </li>
+                    <li>
+As it turns out, the best way to achieve that in organized manner is to create a Custom Provider. It is just a component that wraps the 'default' Provider.     
+                    </li>
+                    <li>
+Inside Custom Provider we will define a state, create an object that holds that state together with state-updating functions and return the 'default' Provider with that object assigned to the Provider's value prop.    
+                    </li>
+                    <li>
+One thing we need to understand about JSX in order to understand Custom Provider. Let's say we create MyComponent, import it to OtherComponent and use it there in return statement. Anything that is written between &ltMyComponent> and &lt/MyComponent> can be accessed in MyComponent as a prop named children. See below, MyComponent grabbed HOLA! and returned it as hola!. 
+                    <div class="code-snippet">
+                        <pre>
+                            <code>
+// assume index.js etc. is set up
+// MyComponent.js
+
+function MyComponent(props) {
+    return &lth1>{props.children.toLowerCase}&lt/h1>
+}
+export default MyComponent;
+
+// OtherComponent.js
+
+import MyComponent from './MyComponent'
+
+function OtherComponent() {
+    return &ltMyComponent>HOLA!&lt/MyComponent>
+}
+
+// lowercase(!) 'hola!' gets displayed on the screen
+                            </code>
+                        </pre>
+                    </div>
+We can use this functionality to build CustomProvider. We just create it as a component that receive children props, and returns JSX with children wrapped in the Context.Provider. Of course, children will be other components and in that way we can propagate the context between them.
+                    </li>
+                </ol>
+                <p>
+Let's implement it in our app:
+                </p>
+                <div class="code-snippet">
+                    <pre>
+                        <code>
+// books.js
+
+import { createContext, useState } from 'react'
+
+const BooksContext = createContext();
+
+function Provider({ children }) {
+    const [count, setCount] = useState(5);
+
+    const valueToShare = {
+        count,
+        incementCount: () => {setCount(count + 1);},
+        decrementCount: () => {setCount(count - 1);},
+    }
+
+    return (
+    &ltBooksContext.Provider value={valueToShare}>
+        {children}
+    &lt/BooksContext.Provider>
+    )
+}
+
+export { Provider };
+export default BooksContext;
+                        </code>
+                    </pre>
+                </div>
+                <div class="code-snippet">
+                    <pre>
+                        <code>
+// index.js
+
+...
+import { Provider } from './context/books';
+
+...
+root.render(
+&ltProvider>
+    &ltApp /> 
+&lt/Provider>
+)
+                        </code>
+                    </pre>
+                </div>
+                <div class="code-snippet">
+                    <pre>
+                        <code>
+//BookList
+
+import BookShow from "./BookShow";
+import { useContext } from "react";
+import BooksContext from './context/books'
+
+function BookList({ books, onDelete, onEdit }) {
+...
+    const {
+        count,
+        incrementCount,
+        decrementCount,
+    } = useContext(BooksContext)
+...
+    return (
+    &ltdiv>
+    {renderedBooks}
+    &ltdiv>
+        {count}
+        &ltbutton onClick={incrementCount}>CLick&lt/button>
+        &ltbutton onClick={incrementCount}>CLick&lt/button>
+    &lt/div>
+    &lt/div>
+    )
+}
+
+export default BookList;
+                        </code>
+                    </pre>
+                </div>
+                <p>
+We should now be able to see the value and increment/decrement the value. We will of course delete this "functionality" and try to serve books using Context instead.
+                </p>
+                <div class="thinking-react">
+                    <h4>Thinking React</h4>
+                    <p>
+Application state vs Component state. App State is data that is used by many different components. Also it's the most important data of our app, something this app won't make sense without. Component state is data that is used by very few components or that works within single component. It doesn't break the whole point of app if  its not there. Those names are here to help us figure out best design of our app. For example whether we should put some data to the Context. App State should go to the Context, Component state not.
+                    </p>
+                </div>
+            </section>
+            <section id="context-refactor">
+                    <h3>Books App Refactor</h3>
+                    <p>
+So in our App, only the array of books can be considered App State, rest of it is Local State. So we want to move books state from Props System to Context. Along with the state itself, we need to move all the methods that modify that state: edit delete, fetch, create.       
+                    </p>
+                    <p>
+It's refactor time!
+                    </p>    
+                    <ul>
+                        <li>
+Take books state, fetchBook editBookById, deleteBookById, CreateBook and move it to books.js (our context file) inside Provider component. 
+                        </li>
+                        <li>
+Create an object named valuesToShare inside Custom Provider in books.js and add all the states and functions you want available there (so the book state and all its handlers). Then pass it in value prop in BooksContext.Provider in return statement.
+                        </li>
+                        <li>
+Import the Context Object (in our case BooksContext) and useContext to all components that need to use books state.
+                        </li>
+                        <li>
+Retrieve the context by calling function useContext with BooksContext as an argument. Destructure the object to get only what you need, like:
+                        <div class="code-snippet">
+                            <pre>
+                                <code>
+const {fetchBooks} = useContext(BooksContext);
+                                </code>
+                            </pre>
+                        </div>
+                        </li>
+                        <li>
+Replace all the Props System code we no longer use inside components with the Context values.  Get rid of unused props.
+                       </li>
+                        <ul>
+                                <li>
+Remember to check and update function names from the names that came from props to the ones that come from Context.
+                                </li>
+                            </ul>
+                        </li>
+                        <li>
+Everything should work now. 
+                        </li>
+            </section>
+            <section id="hooks">
+                <h3>Hooks</h3>
+                <p>
+Hooks are functions that add additional features to a component. Hooks we seen so far: 
+                </p>
+                <ul>
+                    <li>
+useState - allows a component to use the state system
+                    </li>
+                    <li>
+useEffect - allows a component to run code at specific points in time
+                    </li>
+                    <li>
+useContext - allows a component to access values stored in context
+                    </li>
+                </ul>
+                <p>
+As you noticed, all hook names follow naming convention of useHookName. Of course, we can create our own, Custom Hook functions - creating custom hooks facilitates code reuse in React. 
+                </p>
+                <section id="custom-hooks">
+                    <h4>Custom Hooks</h4>
+                    <p>
+Let's look for any bits of code that could be neatly packaged and reused when needed. For example, notice that every time we add a Context to our component we do it in two steps. First, we import useContext and BooksContext. Second, we retrieve data from the Context using useContext(BooksContext). It is always done like this so it's a great candidate for a hook. 
+                    </p>
+                    <p>  
+To implement a hook, we create a new file like ./src/hooks/use-books-context, import needed files, create a component that will wrap the functionalities we want bundled and export it. In our case:
+                    </p>
+                    <div class="code-snippet">
+                        <pre>
+                            <code>
+// use-books-context.js
+
+import { useContext } from "react";
+import BooksContext from "../context/books";
+
+function useBooksContext() {
+return useContext(BooksContext);
+}
+
+export default useBooksContext
+                            </code>
+                        </pre>
+                    </div>
+                    <p>
+We didn't do much - we just morphed two steps into one. Instead of two imports and using two methods, we now use just one import and one method with no arguments. But you can imagine how we can simplify much more complex operations using this technique.
+                    </p>
+                </section>
+                <section id="use-callback">
+                    <h4>useCallback</h4>
+                    <p>
+Our app is pretty much complete but there's still one little warning showing up from ESLint: "React Hook useEffect has a missing dependency: 'fetchBooks'. Either include it or remove the dependency array  react-hooks/exhaustive-deps". 
+What does it mean? 
+                    </p>
+                    <p>
+First of all, it asks us, maybe in some not-too-straightforward fashion, to add fetchBooks to an array in second argument of useEffect. Let's try to do it... or better not - it will cause infinite loop of fetchBooks calling. Why? Well, including something in useEffect-second-argument-array means we want to run the function when that value changes. But we are all fine since fetchBooks doesn't change, or does it? It does - we crate it anew upon each re-render. It does the same thing but still - a new object. So, when fetchBooks is included in said array, React sees that as a new object and calls useEffect - ad infinitum.
+                    </p>
+                    <p>
+If it isn't there - everything is fine but we get the warning. Why? Linter complains that we make use of a variable or function that lives outside useEffect - is prone to change - and yet we don't want to act when this value changes. To move on, we could silence the warning and we'd be fine. We could also fix it with useCallback. It's a hook that helps us tell React that our function isn't actually changing over time. It monitors whether the function we passed to it is actually changing or is just re-created. useCallback never runs your function, just peroforms a check. It fixes bugs around useEffect and other similar situations.
+                    </p>
+                    <div class="code-snippet">
+                        <pre>
+                            <code>
+// books.js 
+//wrap fetchBooks with useCallback
+...
+const fetchBooks = useCallback(async () => {
+    const response = await axios.get('http://localhost:3001/books');
+    setBooks(response.data)
+}, []);
+                            </code>
+                        </pre>
+                    </div>
+                </section>
+            </section>
+            <section id="this-is-it">
+                <h3>This is it!</h3>
+                <p>
+Our app works, of course, it looks like it's 1995 but styling is not a part of this tutorial.
+                </p>
+                <p>
+We went through fair amount of concepts and with that, we're equipped to try creating your own things. <b>Escape tutorial hell :> </b>
+                </p>
+                
+
+            </section>
+
+        </section>
+    </main>    
+</body>
+</html>
