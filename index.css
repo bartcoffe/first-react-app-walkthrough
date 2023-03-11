@@ -102,7 +102,7 @@ p, .code-snippet {
     margin-bottom: 1rem;
 }
 
-.code-snippet {
+/* .code-snippet {
     display: block;
     height: fit-content;
     overflow-x: auto;
@@ -115,7 +115,7 @@ p, .code-snippet {
     border-color:  hsl(var(--clr-light));
 
 
-}
+} */
 
 .thinking-react {
     padding-bottom: 3rem;
