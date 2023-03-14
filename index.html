@@ -55,47 +55,54 @@
                         </ol>
                     </li>
                     <li><a href="#first-part-done">First Part Done!</a></li>
-
                 </ol>
-                <li>
-                    <a href="#part-two">Part II: Data persistence with outside API</a>
-                    <ol>
-                        <li>
-                            <a href="#json-server">JSON Server</a>
-                            <ol>
-                                <li><a href="#json-server-install">Install JSON Server</a></li>
-                                <li><a href="#json-server-interact">How to interact with JSON Server?</a></li>
-                            </ol>
-                        </li>
-                        <li><a href="#updating-handlers">Updating Handlers</a></li>
-                        <li><a href="#use-effect">useEffect</a></li>
-                    </ol>
-                </li>
-
-                <li>
-                    <a href="#part-three">Part III: Outside API + centralized state</a>
-                    <ol>
-                        <li>
-                            <a href="#using-context">Using Context</a>
-                            <ol>
-                                <li><a href="#context-create-context">Create a Context Object</a></li>
-                                <li><a href="#context-specify-data">Specify the data to share</a></li>
-                                <li><a href="#context-consume-data">Consume the data</a></li>
-                            </ol>
-                        </li>
-                        <li><a href="#context-in-our-app">Context in our App</a></li>
-                        <li><a href="#context-custom-context">Custom Context Provider - the tricky part</a></li>
-                        <li><a href="#context-refactor">Books App Refactor with Context</a></li>
-                        <li>
-                            <a href="#hooks">Hooks</a>
-                            <ol>
-                                <li><a href="#custom-hooks">Custom Hooks</a></li>
-                                <li><a href="#use-callback">useCallback</a></li>
-                            </ol>
-                        </li>
-                        <li><a href="#this-is-it">This is it!</a></li>
-                    </ol>
-                </li>
+            </li>
+            <li>
+                <a href="#part-two">Part II: Data persistence with outside API</a>
+                <ol>
+                    <li>
+                        <a href="#json-server">JSON Server</a>
+                        <ol>
+                            <li><a href="#json-server-install">Install JSON Server</a></li>
+                            <li><a href="#json-server-interact">How to interact with JSON Server?</a></li>
+                        </ol>
+                    </li>
+                    <li><a href="#updating-handlers">Updating Handlers</a></li>
+                    <li><a href="#use-effect">useEffect</a></li>
+                </ol>
+            </li>
+            <li>
+                <a href="#part-three">Part III: Outside API + centralized state</a>
+                <ol>
+                    <li>
+                        <a href="#using-context">Using Context</a>
+                        <ol>
+                            <li><a href="#context-create-context">Create a Context Object</a></li>
+                            <li><a href="#context-specify-data">Specify the data to share</a></li>
+                            <li><a href="#context-consume-data">Consume the data</a></li>
+                        </ol>
+                    </li>
+                    <li><a href="#context-in-our-app">Context in our App</a></li>
+                    <li><a href="#context-custom-context">Custom Context Provider - the tricky part</a></li>
+                    <li><a href="#context-refactor">Books App Refactor with Context</a></li>
+                    <li>
+                        <a href="#hooks">Hooks</a>
+                        <ol>
+                            <li><a href="#custom-hooks">Custom Hooks</a></li>
+                            <li><a href="#use-callback">useCallback</a></li>
+                        </ol>
+                    </li>
+                    <li><a href="#this-is-it">This is it!</a></li>
+                </ol>
+            </li>
+            <li>
+                <a href="#bonus">Bonus: build basic website components</a>
+                <ol>
+                    <li><a href="#button">Button</a></li>
+                    <li><a href="#accordion">Accordion</a></li>
+                    <li><a href="#dropdown">Dropdown</a></li>
+                    <li><a href="#navigation">Navigation</a></li>
+                </ol>
             </li>
         </ol>
 
@@ -1549,7 +1556,250 @@ We went through fair amount of concepts and with that, we're equipped to try cre
                 
 
             </section>
+        <section id="bonus">
+            <h2>Bonus: build basic website components</h2>
+            <p>
 
+            </p>
+            <section id="button">
+                <h3>Button</h3>
+                <p>
+Button: the simpliest thing under the sun but it can serve as a good introduction to see some good practices around creating reusable components and styling them.
+                </p>
+                <p>
+For the button component we will use tailwindcss and a classnames library - there is a few nice code-organization practices we will see on this button component.
+                </p>
+                <p>
+To customize our buttons in organized manner, create a Button component that returns &ltbutton>. It will give us space to write some custom logic there and reuse it. 
+Our first consideration should be: by using custom Button, i don't want to lose any functionality that simple html button offers, like onClick.
+Also, we'd like to be able to write text between &ltButton>text&lt/Button> and have that displayed inside button.
+                </p>                
+                <ul>
+                    <li>
+The former is handled by receiving a prop called ...rest - that will allow you to pass all not-explicitly-specified attributes down to html button. 
+Just unpack ...rest like &ltbutton {...rest}/>       
+                    </li>
+                    <li>
+To achieve the latter, destructure children prop and pass it to default button - that will pass whatever user typed
+                    </li>
+                </ul>
+                <p>
+Next thing is organizing the styling. Instead of writing logic yourself, use classnames object and throw all styles you want your buttons there and specify conditions under each style should be applied (usually based on the props passed in).
+For example, I want to create red button - I create Button and pass a prop called red. Inside button, this prop is received and if its value is not falsy, the style will be applied.
+This is a little trick, because if we pass a prop - without value specified with {}, it is received as truthy, and if we do not pass it at all, it's falsy. Cool!
+                </p>
+                <p>
+To make it even more robust, we can use bulitin propTypes method applied directly on our component that allows us to warn user if they supplied conflicting values for their components.
+                </p>
+                <p>
+Ok, let's see all that in code:
+                </p>
+                <div class="code-snippet">
+                    <pre>
+                        <code class="language-js">
+// App.js
+import Button from "./Button";
+
+
+function App() {
+
+    return (
+        &ltdiv className='grid grid-cols-2 justify-items-center'>
+        &ltButton  onClick={() => console.log(`clicked red`)} red>
+            red button
+        &lt/Button>
+        &ltButton  onClick={() => console.log(`clicked black`)} black rounded>
+            black button
+        &lt/Button>
+    &lt/div>
+    );
+};
+
+export default App;
+                        </code>
+                    </pre>
+                </div>
+                <div class="code-snippet">
+                    <pre>
+                        <code class="language-js">
+import classNames from "classnames";
+
+function Button({
+    children,
+    rounded,
+    red,
+    black,
+    ...rest
+}) {
+
+
+    const classes = classNames(
+        rest.className,
+        'px-4 py-3',
+        'font-custom text-2xl tracking-wider text-slate-200',
+        {
+            'border-red-800 border-8 bg-red-700': red,
+            'border-slate-800 border-8 bg-slate-700': black,
+            'rounded-full': rounded,
+        }
+    )
+
+    return (
+        &ltbutton className={classes} {...rest}>
+            {children}
+        &lt/button>
+    )
+};
+
+
+export default Button;
+                        </code>
+                    </pre>
+                </div>
+        
+            </section>
+            <section id="accordion">
+                <h3>Accordion</h3>
+                <p>
+Accordion is a component made out of a label and some text. By default - the text is hidden and when we click on the label, it expands to show the text.
+First think of data it should show - perhaps the most comfortable format to work with will be an array containing objects with properties of label and content we want to display.
+                </p>
+                <p>
+To construct it, we define an Accordion component, pass an array of items as a prop and map each item onto a div.
+To handle the unfolding, first define an expandedIndex state (it will state which label is currently open) with default value of -1. 
+Then create a handler that will update that state when user clicks on a label (attach the handler to and onClick event on a div).
+Tricky thing might be to see how it all plays together, how 'disapearing' happen - we use conditional rendering concept for that.
+
+Look closely below: based on value of isExpanded, either a div with the text or false will be returned. Exactly what we need. 
+                </p>
+                <div class="code-snippet">
+                    <pre>
+                        <code class="language-js">
+{isExpanded && &ltdiv> &ltp>{item.content}&lt/p>&lt/div>}        
+                        </code>
+                    </pre>
+                </div>
+                <p>
+To sum up: on each click on label, handler runs, updates state (with the value that should be exapnded), that causes re-render, map function runs again, creates labels while checking if its index equals to the state value.
+If so, renders the text. Otherwise just label is rendered. 
+                </p>
+                <div class="code-snippet">
+                    <pre>
+                        <code class="language-js">
+// App.js
+
+import Accordion from "./Accordion";
+
+function App() {
+
+    const accordionData = [
+        {
+            id: 1,
+            label: 'how hard is rocket science actually?',
+            content: "it's no brain surgery...",
+        },
+        {
+            id: 2,
+            label: 'why does my heart feel so bad?',
+            content: "less moby more morbin'",
+        },
+        {
+            id: 3,
+            label: 'u og?',
+            content: "errybody gangsta until it's time to do some gangsta s***",
+        },
+    ]
+
+
+    return (
+    &ltdiv>
+        &ltAccordion data={accordionData}/>
+    &lt/div>
+    )
+};
+
+export default App;
+                            
+                        </code>
+                    </pre>
+                </div>
+                <div class="code-snippet">
+                    <pre>
+                        <code class="language-js">
+import { useState } from "react";
+
+function Accordion({data}) {
+
+    const [expandedIndex, setExpandedIndex] = useState(-1);
+    const handleClick = (nextIndex) => expandedIndex === nextIndex ? setExpandedIndex(-1) : setExpandedIndex(nextIndex)
+
+    const accordionItemsMapping = data.map((item, index) => {
+        const isExpanded = index === expandedIndex;
+
+        return (
+            &ltdiv key={item.id} onClick={() => handleClick(index)}>
+                &ltdiv >
+                    {item.label}
+                &lt/div>
+                {isExpanded && &ltdiv>
+                    &ltp>{item.content}&lt/p>
+                &lt/div>}
+            &lt/div>
+        )
+    })
+
+
+    return &ltdiv>{accordionItemsMapping}&lt/div>
+}
+
+export default Accordion;
+                        </code>
+                    </pre>
+                </div>                
+            </section>
+            <section id="dropdown">
+                <h3>Dropdown</h3>
+
+
+
+                <p>dropdown stuff....</p>
+
+
+
+
+
+
+
+
+            </section>
+            <section id="navigation">
+                <h3>Navigation</h3>
+                <p>
+The way navigation is handled in React is quite specific. It has to do with differences in approach between traditional web pages and react pages.
+Traditionally, we navigate with use of &lta> tags. When user clicks on the link, a request is made to the server to fetch a new page and its data.
+Also, when that happens, all current javacript variables get cleared. This is the crux - app made in react comes as a one big big soup of javascript and fetching it on each navigate action would be a disaster. 
+So, we cannot use default &lta> behavior. Instead, as we'll see, we'll mimick it so, when browsing our app, user will see path and 'pages' change when they navigate.
+Let's get to it. We will first see theoretically how navigation is usually hadled in React apps, then code it up. There are two scenarios users interact with an web app:
+                </p>
+                <ul>
+                    <li>
+User enters our app - types our address in
+                    </li>
+                    <li>
+User navigates between different 'pages' within our app (like from main page to faq to about authors)             
+                    </li>
+                </ul>
+                <p>
+In the first case, we need to make sure that no matter what user types (like myapp/lalalalal), they will receive index.html file.
+Luckily that is React's default behavior. 
+Then, we should look at what's actually behind the /path and apply routing rules to decide which components to display based on typed path.
+We can access the path typed by user by accessing window.location.pathname
+                </p>
+                <p>
+ When user is already in our app, they navigate between different 'pages' using provided navigation. That's a second scenario and handling this require a few more steps.                
+                </p>
+                
+            </section>
         </section>
     </main>    
 </body>
