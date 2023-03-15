@@ -1675,6 +1675,7 @@ Look closely below: based on value of isExpanded, either a div with the text or 
                 <div class="code-snippet">
                     <pre>
                         <code class="language-js">
+// conditional rendering
 {isExpanded && &ltdiv> &ltp>{item.content}&lt/p>&lt/div>}        
                         </code>
                     </pre>
@@ -1778,27 +1779,309 @@ export default Accordion;
 The way navigation is handled in React is quite specific. It has to do with differences in approach between traditional web pages and react pages.
 Traditionally, we navigate with use of &lta> tags. When user clicks on the link, a request is made to the server to fetch a new page and its data.
 Also, when that happens, all current javacript variables get cleared. This is the crux - app made in react comes as a one big big soup of javascript and fetching it on each navigate action would be a disaster. 
-So, we cannot use default &lta> behavior. Instead, as we'll see, we'll mimick it so, when browsing our app, user will see path and 'pages' change when they navigate.
-Let's get to it. We will first see theoretically how navigation is usually hadled in React apps, then code it up. There are two scenarios users interact with an web app:
+So, we cannot use default &lta> behavior. Instead, as we'll see, we'll mimick it, so that when user browses our app, they will see path and 'pages' change but what will actually happen will be differen components being displayed/hidden.
+Let's get to it. We will first see theoretically how navigation is usually hadled in React apps, then code it up. There are two scenarios users interact with a web app:
                 </p>
-                <ul>
-                    <li>
-User enters our app - types our address in
-                    </li>
-                    <li>
-User navigates between different 'pages' within our app (like from main page to faq to about authors)             
-                    </li>
-                </ul>
+                <h4>
+User enters our app - types our address into the browser              
+                </h4>
                 <p>
-In the first case, we need to make sure that no matter what user types (like myapp/lalalalal), they will receive index.html file.
+In this case we need to make sure that no matter what user types (like myapp/lalalalal), they will receive index.html file.
 Luckily that is React's default behavior. 
 Then, we should look at what's actually behind the /path and apply routing rules to decide which components to display based on typed path.
 We can access the path typed by user by accessing window.location.pathname
                 </p>
+                <h4>
+User navigates between different 'pages' within our app
+                </h4>
                 <p>
- When user is already in our app, they navigate between different 'pages' using provided navigation. That's a second scenario and handling this require a few more steps.                
+ When user is already in our app, they navigate between different 'pages' using provided navigation. That's a second scenario and handling this require a few more steps. Let's see how to handle user clicking a link (directing them somewhere inside of our app) or pressing 'back/forward button'                 
                 </p>
-                
+                <ul>
+                    <li>
+<b>User navigates within our app:</b> by default, browser after user clicks on a link will try to fetch new html page/path and reset all javascript environment. So, first we need to remember to stop browsers' default page-switching behavior and handle it ourselves. How is it done?    
+                    <ul>
+                        <li>
+Create a component called Link that will wrap a html/jsx &lta> tag - use it whenever we want to show &lta> element that is going to navigate the user around inside of our app. 
+To &lta> tag, attach an event handler that will call custom navigation function and, very importantly, prevent aforementioned page reload-behavior by event.preventDefault.
+Our custom navigation function will update a state that represents a path an user currently browses. Also, it will appended to browser's history stack to reflect this change. Said state will be propagated everywhere inside the app so that React will know which components to render based on the path state value.
+                        </li> 
+                    </ul>
+
+                    </li>
+                    <li>
+ <b>User clicks back/forward button: </b> Whenever user clicks these buttons, browser's window object is going to emit an event called a popstate event - changing the current history entry to that of the last page the user visited. 
+ As we have just read in previous paragraph, page-switching within our app is handled by custom navigation function that updates this history - so as long as user goes back-and-forth within our app, the app won't reload.
+                    <ul>
+                        <li>
+To detect user clicking back/forward,  we add an event listener on a 'window' object listening for popstate event. On that event, we set handler that will update current path.
+                        </li>
+                    </ul>
+                </ul>
+                <p>
+Making it in that fashion has some benefits: imagine you have an app where you display pictures. On first visit to app/pictures we fetch pictures from the server. Then, user goes to app/otherpage and, yet again, comes back to /pictures. In traditional app set-up, the JS env would be lost and so the pictures would need to be fetched again. In React, because you never really leave one page, the pictures are still avaialble, no loading time, less requests!
+                </p>
+                <p>
+On to implementation!
+                </p>
+                <p>                 
+Set up your project and create sample components to navigate between like PageA, PageB.             
+                </p>
+                <p>
+Create a context for our navigation, just a boilerpalte custom provider. Wrap &ltApp> with it.                  
+                </p>
+                <p>
+Inside NavigationContext, 
+                        <ul>
+                            <li>
+declare piece of state called currentPath with default value of window.location.pathname 
+                            </li>
+                            <li>
+set up listener for popstate event (back/forward button in browser) and based on its value, update currentPath state. That way each time user hits back/forward state will update so page will re-render. It's achieved by use of useEffect - it gets called just once, on first render - because we set up listener just once then it lives its own life. If we didn't use useEffect, we'd end up flooded with listeners :> (our useEffect also needs a clean-up function).
+                            </li>
+                            <li>
+We got the set up for the back/forward clicking. Now, we need a function to handle navigation to different links on our page. It will need to do two things: update address bar with pushState, and update currentPath -> we need to do it because pushState doesn't trigger a popstate event - so we cannot rely on a setter called there (it will just change the address on bar).  
+                            </li>
+                            <li>
+Share navigation function and currentPath state in our context provider. Context done!
+                            </li>
+                        </ul>
+                    </li>
+                </p>
+                <div class="code-snippet">
+                    <pre>
+                        <code class="language-js">
+// src/context/navigation-context.js
+import { createContext, useState, useEffect } from "react";
+
+const NavigationContext = createContext();
+
+function NavigationProvider({ children }) {
+    
+    const [currentPath, setCurrentPath] = useState(window.location.pathname);
+
+    useEffect(() => {
+        const handler = () => {
+            setCurrentPath(window.location.pathname);
+        };
+        window.addEventListener('popstate', handler);
+        return () => {window.removeEventListener('popstate', handler);};
+    }, []);
+
+    const navigate = (to) => {
+        window.history.pushState({}, '', to)
+        setCurrentPath(to);
+    }
+
+
+    return &ltNavigationContext.Provider value={{currentPath, navigate}}>
+        {children}
+    &lt/NavigationContext.Provider>
+}
+
+export { NavigationProvider };
+export default NavigationContext;
+                        </code>
+                    </pre>
+                </div>
+                <p>
+Once context is done, let's make accessing it a bit easier with custom hook. we did already a thing exactly like that: create hooks/use-navigation.js and type:
+                </p>
+                <div class="code-snippet">
+                    <pre>
+                        <code class="language-js">
+// src/hooks/use-navigation.js
+
+import NavigationContext from "./context/navigation";
+import { useContext } from "react";
+
+function useNavigation() {
+    return useContext(NavigationContext);
+}
+
+export default useNavigation
+                        </code>
+                    </pre>
+                </div>
+                <p>
+Next thing is creating a Link component: a goal is to override default navigation &lta>. Link is straightforward: we need to wrap &lta> tag, prevent default onClick behavior and use our navigation function instead. 
+                </p>
+                <div class="code-snippet">
+                    <pre>
+                        <code class="language-js">
+// Link.js
+
+import useNavigation from "./hooks/use-navigation";
+
+function Link({ to, children }) {
+    const { navigate } = useNavigation();
+
+
+    const handleClick = (event) => {
+//line below checks if ctrl is pressed - if it is we expect to have link displayed in new tab 
+//so we use default &lta> tag oclick behavior to open new tab and fetch the page from server.
+        if (event.metaKey || event.ctrlKey) {return;}
+        event.preventDefault();
+        navigate(to);
+    };
+
+    return &lta href={to} onClick={handleClick}>{children}&lt/a>
+};
+
+export default Link;
+                        </code>
+                    </pre>
+                </div>
+                <p>
+Test it by adding the component to App:
+                </p>
+                <div class="code-snippet">
+                    <pre>
+                        <code class="language-js">
+// App.js
+
+import Link from "./Link";
+function App() {
+    return (
+        &ltdiv>
+            &ltLink to="/a"> Go to A &lt/Link>
+            &ltLink to="/b"> Go to B &lt/Link>
+        &lt/div>
+    )
+}
+
+export default App;
+                        </code>
+                    </pre>
+                </div>
+                <p>
+Ok, so far we have links that direct us to different paths. Now we need to be able to render different components based on the current path. 
+There is a pattern for doing that:
+we will add Route component. It will have two props: path and a children  (because we will be wrapping our Page components in Route components).
+Logic inside Route is simple: if path prop is equal to currentPath (that we grab from context), display the children (so the components it wraps). else, return nothing.                     
+                </p>
+                <div class="code-snippet">
+                    <pre>
+                        <code class="language-js">
+// Route.js
+
+import useNavigation from "./hooks/use-navigation";
+
+function Route({ path, children }) {
+    const { currentPath } = useNavigation();
+
+    if (path === currentPath) {
+        return children;
+    }
+    return null;
+
+
+}
+export default Route;
+                        </code>
+                    </pre>
+                </div>
+                <p>
+test again:
+                </p>
+                <div class="code-snippet">
+                    <pre>
+                        <code class="language-js">
+// App.js
+
+import Link from "./Link";
+import Route from "./Route";
+import PageA from "./PageA";
+import PageB from "./PageB";
+
+function App() {
+    return (
+        &ltdiv>
+            &ltdiv>
+                &ltLink to="/a"> Go to A &lt/Link>
+                &ltLink to="/b"> Go to B &lt/Link>
+            &lt/div>
+            &ltdiv>
+            &ltRoute path = '/a'>
+                &ltPageA />
+            &lt/Route>
+            &ltRoute path = '/b'>
+                &ltPageB />
+            &lt/Route>               
+            &lt/div>	
+
+        &lt/div>
+
+    )
+}
+
+export default App;
+                        </code>
+                    </pre>
+                </div>
+                <p>
+Everything works, but to give a bit of a structure to it, it's time to finally create Navigation component. As you expect it will just return Link elements, but this structure will allow us to make it look like actual navigation. Its a good idea to create an array of links with the paths we want included there and then dynamically create links with map. 
+                </p>
+                <div class="code-snippet">
+                    <pre>
+                        <code class="language-js">
+// Navigation.js
+
+import Link from "./Link";
+
+function NavigationBar() {
+    const links = [
+        {label: '/', path: '/'},
+        {label: 'page a', path: '/a'},
+        {label: 'page b', path: '/b'},
+    ];
+    const renderedLinks = links.map((link) => {
+        return &ltLink key={link.label} to={link.path}>&lth2>{link.label}&lt/h2>&lt/Link>
+    })
+    return (
+        &ltdiv>
+            {renderedLinks}
+        &lt/div>
+    )
+}
+
+export default NavigationBar
+                        </code>
+                    </pre>
+                </div>
+                <div class="code-snippet">
+                    <pre>
+                        <code class="language-js">
+// App.js
+import NavigationBar from "./NavigationBar";
+import Route from "./Route";
+import PageA from "./PageA";
+import PageB from "./PageB";
+
+function App() {
+    return (
+        &ltdiv>
+            &ltNavigationBar/>
+            &ltdiv>
+            &ltRoute path = '/a'>
+                &ltPageA />
+            &lt/Route>
+            &ltRoute path = '/b'>
+                &ltPageB />
+            &lt/Route>               
+            &lt/div>	
+        &lt/div>
+
+    )
+}
+
+export default App
+                        </code>
+                    </pre>
+                </div>
+                <p>
+All done!
+                </p>
             </section>
         </section>
     </main>    

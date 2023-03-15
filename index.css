@@ -79,7 +79,7 @@ img {
 /* my styles */
 
 html {
-    scroll-behavior: smooth;
+    /* scroll-behavior: smooth; */
   }
 
 main {
@@ -140,7 +140,8 @@ p, .code-snippet {
 }
 
 ul > li {
-    list-style-type: circle; 
+    list-style-type: circle;
+    padding: 0.15rem; 
 }
 .table-of-contents li {
     padding-bottom: 0.2rem;
