@@ -96,7 +96,7 @@
                 </ol>
             </li>
             <li>
-                <a href="#bonus">Bonus: build basic website components</a>
+                <a href="#bonus">Build basic website components</a>
                 <ol>
                     <li><a href="#button">Button</a></li>
                     <li><a href="#accordion">Accordion</a></li>
@@ -1571,7 +1571,7 @@ For the button component we will use tailwindcss and a classnames library - ther
                 </p>
                 <p>
 To customize our buttons in organized manner, create a Button component that returns &ltbutton>. It will give us space to write some custom logic there and reuse it. 
-Our first consideration should be: by using custom Button, i don't want to lose any functionality that simple html button offers, like onClick.
+Our first consideration should be: by using custom Button, we don't want to lose any functionality that simple html button offers, like onClick.
 Also, we'd like to be able to write text between &ltButton>text&lt/Button> and have that displayed inside button.
                 </p>                
                 <ul>
@@ -1589,7 +1589,7 @@ For example, I want to create red button - I create Button and pass a prop calle
 This is a little trick, because if we pass a prop - without value specified with {}, it is received as truthy, and if we do not pass it at all, it's falsy. Cool!
                 </p>
                 <p>
-To make it even more robust, we can use bulitin propTypes method applied directly on our component that allows us to warn user if they supplied conflicting values for their components.
+To make it even more robust, we can apply bulitin propTypes method directly on our component. That allows us to warn user if they supplied conflicting values for their components.
                 </p>
                 <p>
 Ok, let's see all that in code:
@@ -1682,7 +1682,7 @@ Look closely below: based on value of isExpanded, either a div with the text or 
                 </div>
                 <p>
 To sum up: on each click on label, handler runs, updates state (with the value that should be exapnded), that causes re-render, map function runs again, creates labels while checking if its index equals to the state value.
-If so, renders the text. Otherwise just label is rendered. 
+If so, renders the text. Otherwise only a label is rendered. 
                 </p>
                 <div class="code-snippet">
                     <pre>
@@ -1760,18 +1760,336 @@ export default Accordion;
             </section>
             <section id="dropdown">
                 <h3>Dropdown</h3>
+                <p>
+We all know how dropdown looks like so let's get straight to it. Let's start with data format that best fit it. An array of objects with label and value properties will do. 
+Create boilerplate project with Dropdown component. Inside App, place the array with the data for dropdown and make App return Dropdown.        
+                </p>
+                <p>
+To pass data into the Dropdown component create a a prop named options (and receive it on the other end).
+Map the different options onto divs to achieve as many divs as there is objects in the array. At this point we should have a dropdown with all options visible.
+                </p>
+                <p>
+Next thing is hiding/showing the options. For that, we need to define a piece of state, isOpen, and a onClick handler (on a div that contains different options) that will toggle the value of isOpen. Based on isOpen value, we will conditionally render the options.
+                </p>
+                <p>
+We can now open and close dropdown. Let's see the code so far:
+                </p>
+                <div class="code-snippet">
+                    <pre>
+                        <code class="language-js">
+// App.js
 
+import Dropdown from "./Dropdown";
 
+function App() {
 
-                <p>dropdown stuff....</p>
+    const options = [
+        { label: 'Red', value: 'red' },
+        { label: 'Green', value: 'green' },
+        { label: 'Blue', value: 'blue' },
+    ]
+    return (
+        &ltdiv>
+            &ltDropdown options={options}  />
+        &lt/div>
+    )
+}
 
+export default App;
+                        </code>
+                    </pre>
+                </div> 
+                <div class="code-snippet">
+                    <pre>
+                        <code class="language-js">
+// Dropdown.js
 
+import { useState } from "react";
 
+function Dropdown({ options }) {
 
+    const [isOpen, setIsOpen] = useState(false);
 
+    const handleClick = () => {
+        setIsOpen(!isOpen);
+        console.log('user opened dropdown')
+    }
 
+    
+    const renderedOptions = options.map((option) => {
+        return &ltdiv key ={option.value}>{option.label}&lt/div>
+    })
+    return (
+        &ltdiv >
+            &ltdiv onClick={handleClick}> 'Select...' &lt/div>
+            {isOpen && &ltdiv>{renderedOptions}&lt/div>}
+        &lt/div>
+    )
+}
 
+export default Dropdown;
+                        </code>
+                    </pre>
+                </div> 
+                <p>
+Next, we need to take care of a selection: if we click on a given option, we want that option to replace Select... and store the selected value to use it later on  - otherwise it would make no sense to create a dropdown. We will handle that just like any other user input we've seen before, with a pattern called Controlled Component. 
+                </p>
+                <p>
+We need to define a selection state in a parent component (App),  pass its value together with its setter as props into Dropdown.
+                </p>
+                <p>
+Inside Dropdown, we create an onClick handler for a div containing an option, so that each time we click on option, two things happen: dropdown gets closed and selection state gets updated. As soon as it happens, component is re-rendered displaying appropriate values. 
+                </p>
+                <p>
+In code:
+                </p>
+                <p>
+                    <div class="code-snippet">
+                        <pre>
+                            <code class="language-js">
+// App.js
 
+import { useState } from "react";
+import Dropdown from "./Dropdown";
+
+function App() {
+
+    const [selection, setSelection] = useState(null);
+
+    const handleSelect = (option) => {
+        setSelection(option);
+    }
+
+    const options = [
+        { label: 'Red', value: 'red' },
+        { label: 'Green', value: 'green' },
+        { label: 'Blue', value: 'blue' },
+    ]
+    return (
+        &ltdiv>
+            &ltDropdown options={options} selection={selection} onChange={handleSelect} />
+        &lt/div>
+    )
+}
+                    
+export default App
+                            </code>
+                        </pre>
+                    </div> 
+                    <div class="code-snippet">
+                        <pre>
+                            <code class="language-js">
+import { useState } from "react";
+
+function Dropdown({ options, selection, onChange }) {
+
+    const [isOpen, setIsOpen] = useState(false);
+
+    const handleClick = () => {
+        setIsOpen(!isOpen);
+        console.log('user opened dropdown')
+    }
+
+    const handleOptionClick = (option) => {
+        setIsOpen(false);
+        onChange(option);
+    }
+
+    
+    const renderedOptions = options.map((option) => {
+        return &ltdiv onClick={() => handleOptionClick(option)} key ={option.value}>{option.label}&lt/div>
+    })
+    return (
+        &ltdiv >
+            &ltdiv onClick={handleClick}>
+                {selection?.label || 'Select...' }
+            &lt/div>
+            {isOpen && &ltdiv>{renderedOptions}&lt/div>}
+            {selection?.label ? `value selected: ${selection.value}` : null}
+        &lt/div>
+    )
+}
+
+export default Dropdown
+                            </code>
+                        </pre>
+                    </div>
+                    <p>
+Ok, our dropdown works! However most dropdowns come with one more feature: when we click anywhere outside of the dropdown, its options should roll up. How do we go about something like this?      
+                    </p>
+                    <p>
+It's not so straightforward because an usual scenario is that a component listens for events that have been triggered by elements belonging to it. This time around, we need to listen for an event triggered outside the component in question. 
+                    </p>
+                    <p>
+To solve it, we need to cover some background around such action.
+                    </p>
+                    <ul>
+                        <li>
+<b>Document wide click handlers.</b> snippet below shows how we set up a click listener on whole webpage. handleClick receives event object whose target property is an element user clicked. 
+                            <div class="code-snippet">
+                                <pre>
+                                    <code class="language-js">
+const handleClick = (event) -> {
+    console.log(event.target);
+};
+
+document.addEventListener('click', handleClick);
+                                    </code>
+                                </pre>
+                            </div>
+                        </li>
+                        <li>              
+<b>Event capture and Bubbling.</b> When an event occurs, browser wants to find handlers to call. It is going to look at a collection of different HTML elements and check to see if they have event handler tied to them.  Order in which it occurs is divided into three phases: capture, target, and bubble.          
+
+The bubbling principle is simple. When an event happens on an element, it first runs the handlers on it, then on its parent, then all the way up on other ancestors. Almost all events bubble.
+
+                        <div class="code-snippet">
+                            <pre>
+                                <code class="language-js">
+&ltform onclick="alert('form')">
+&ltdiv onclick="alert('div')">
+    &ltp onclick="alert('p')">
+&lt/div>
+&lt/form>                              
+                                </code>
+                            </pre>
+                        </div>
+                        <p>                
+When we click on a p element, following chain of events happen: onClick is called that &ltp> &rarr; then on the outer &ltdiv> &rarr; then on the outer &ltform>. And so on upwards till the document object.
+                        </p>
+                        <p>
+The most deeply nested element that caused the event is called a target element, accessible as event.target.
+                        </p>
+                        <p>
+For instance, if we have a single handler on form.onclick, it can “catch” all clicks inside the form. No matter where the click happened, it bubbles up to &ltform> and runs the handler.
+                        </p>
+                        <p>
+Capturing phase work the other way around, it starts calling the handlers top to bottom, so from the document root to the target element. It is rarely used and 'disabled' by default. 
+Target phase is when handlers get called on the target element itself.
+                        </p>
+                        <div class="code-snippet">
+                            <pre>
+                                <code class="language-js">
+// capture phase disabled by default
+document.addEventListener('click', handleClick);
+// capture phase enabled by setting 3rd argument to true
+document.addEventListener('click', handleClick, true)                             
+                                </code>
+                            </pre>
+                        </div>
+                        </li>
+                    </ul>
+                    <p>
+It turns out we need to enable the capture phase of event capture. Ok, but why?
+                    </p>
+                    <p>
+Look closely at the dropdown. We click on the label, dropdown expands, we select one option and it colapses. Now add the listener for the click anywhere on the document to it. If we stick to default event listener with bubble phase only, a handler attached to options div will be called before the handler attached to the document. That means that options-div handler will cause re-render which will happen before bubble phase gets to the point where it sees document-wide handler. That might cause some bugs and it's important to consider that sort of stuff. In our app, it doesn't make too much mess but it can be problematic down the road.              
+                    </p>
+                    <p>
+You can actually play and see this behavior when you write down the final code for the dropdown. Switch said event listener to true and choose an option on dropdown. Inspect console logs and see that you first get a log saying 'user clicked inside the dropdown; option chosen: Green' (so re-render happened) and that only later you get a log saying 'user clicked outside the dropdown; dropdown set to closed'. That means that the handler for checking clicks outside the dropdown couldn't do its job because by the time it checked, the dropdown was already rerendered and closed.         
+                    </p>
+                    <p>
+Now that we know some of the nuances, we can code this up. 
+We will need an useEffect hook to add a listener with a handler. We have done that before. We also know we need to set it with capture phase flag of true. 
+                    </p>
+                    <p>
+But what w haven't discussed is how do we actually check whether user clicked outside the dropdown. In plain javascript,  we would write something like document.getElementById but this isn't a very good practice in React. Also, if we have a lot of dropdowns in our app it would get very messy very quickly. To handle references to HTML elements we should use an useRef hook instead. It allows a component to get a reference to a DOM element that it creates. 
+                    <p>
+Creating reference to a particular element is done by creating an instance of a useRef and assigning it to a jsx element as a prop called ref. So, inside the document-wide handler we can now just use the ref value and check against the event.target value sent by a click event. 
+                    <p>
+    All figured out! Finally see the final implementation below and perhaps re-read the process with the code in mind.   
+                    </p>
+                    <div class="code-snippet">
+                        <pre>
+                            <code class="language-js">
+// App.js
+
+import { useState } from "react";
+import Dropdown from "./Dropdown";
+
+function App() {
+
+    const [selection, setSelection] = useState(null);
+
+    const handleSelect = (option) => {
+        setSelection(option);
+    }
+
+    const options = [
+        { label: 'Red', value: 'red' },
+        { label: 'Green', value: 'green' },
+        { label: 'Blue', value: 'blue' },
+    ]
+    return (
+        &ltdiv>
+            &ltDropdown options={options} selection={selection} onChange={handleSelect} />
+        &lt/div>
+    )
+}
+
+export default App                           
+                            </code>
+                        </pre>
+                    </div>
+                    <div class="code-snippet">
+                        <pre>
+                            <code class="language-js">
+// Dropdown.js
+
+import { useState, useRef, useEffect } from "react";
+
+function Dropdown({ options, selection, onChange }) {
+
+    const [isOpen, setIsOpen] = useState(false);
+
+    const divElement = useRef();
+
+    useEffect(() => {
+        const handler = (event) => {
+// the first check is here only for the cases when ref is null (like when we do conditional rendering etc.)
+// It is a good practice to add this check when dealing with refs
+            if (!divElement.current) {return;}
+            if (!divElement.current.contains(event.target)) {
+                setIsOpen(false);
+                console.log('user clicked outside the dropdown; dropdown set to closed')
+            }
+        };
+        document.addEventListener('click', handler, true);       
+        return () => {
+            document.removeEventListener('click', handler);
+        };
+    }, []);
+
+    const handleClick = () => {
+        setIsOpen(!isOpen);
+        console.log('user opened dropdown')
+    }
+
+    const handleOptionClick = (option) => {
+        setIsOpen(false);
+        onChange(option);
+        console.log('user clicked inside the dropdown; option chosen: ' + option.label)
+    }
+
+    
+    const renderedOptions = options.map((option) => {
+        return &ltdiv onClick={() => handleOptionClick(option)} key={option.value}>{option.label}&lt/div>
+    })
+    return (
+        &ltdiv ref={divElement}>
+            &ltdiv onClick={handleClick}>
+                {selection?.label || 'Select...' }
+            &lt/div>
+            {isOpen && &ltdiv>{renderedOptions}&lt/div>}
+            {selection?.label ? `value selected: ${selection.value}` : null}
+        &lt/div>
+    )
+}
+
+export default Dropdown                         
+                            </code>
+                        </pre>
+                    </div>
             </section>
             <section id="navigation">
                 <h3>Navigation</h3>
